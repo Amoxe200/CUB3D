@@ -17,15 +17,16 @@ void ft_init()
 
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr, width, height, "AMOXE");
-    img.img     =       mlx_new_image(img.mlx_ptr, width, height);
-    img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
+   // img.img     =       mlx_new_image(img.mlx_ptr, width, height);
+    //img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
+   
 }
 
 
 int main()
 {
     ft_init();
-    draw();
+    draw_map();
 	mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
     mlx_loop(img.mlx_ptr);
     return 0;

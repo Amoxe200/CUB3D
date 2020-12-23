@@ -31,8 +31,9 @@ typedef struct s_player
 {
     float x;
     float y;
-    int mv_x;
-    int mv_y;
+    int last_x;
+    int last_y;
+
 }               m_player;
 
 typedef struct mv_player
@@ -62,11 +63,13 @@ int map[16][30];
 void draw();
 void draw_square(int x, int y, t_data data, int color);
 void draw_circle(int x, int y, t_data data, int color);
-void draw_map(int x, int y, t_data data);
+void draw_map();
 int onClickListner(int keycode);
 void draw_player();
 void movePlayer();
 void ft_line(float angle,int radius);
 void turnDirect();
 void movement();
+void checkWall();
+
 #endif
