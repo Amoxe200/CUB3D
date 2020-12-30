@@ -1,7 +1,7 @@
 
 NAME = cub3D
 CC = gcc
-Src = main.c functions.c
+Src = main.c functions.c libft/*.c getNextLine/*.c
 Flags = -Wall -Wextra -Werror
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx

@@ -2,8 +2,8 @@
 
 void        my_mlx_pixel_put(t_data *data,  int x,  int y,  int color)
 {
-    if (x < width && y < height)
-    data->addr[y * width + x] = color;
+    if (x < map_conf.width && y < map_conf.height)
+    data->addr[y * map_conf.width + x] = color;
 }
 
 int map[16][30] =
@@ -34,15 +34,15 @@ void draw_square(int x, int y, t_data data, int color)
     int c;
     int d;
 
-    i = (width / 30) * x;
+    i = (map_conf.width / 30) * x;
     c = i;
-    j = (height / 16) * y;
+    j = (map_conf.height / 16) * y;
     d = j;
 
-    while (j <  d + (height / 16))
+    while (j <  d + (map_conf.height / 16))
     {
         i = c;
-        while (i < c + (width / 30))
+        while (i < c + (map_conf.width / 30))
         {
             my_mlx_pixel_put(&data, i, j, color);
             i++;
@@ -96,7 +96,7 @@ void draw_map()
     int j;
     int color;
 
-    img.img     =       mlx_new_image(img.mlx_ptr, width, height);
+    img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
     img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
    
      j = 0;
@@ -117,12 +117,6 @@ void draw_map()
 					color = 0x000000;
 					draw_square(i, j, img, color);
 			}
-			
-          /* if (map[j][i] == 2)
-             {
-                  g_player.x = i * (width / 30);
-                  g_player.y = j * (height / 16);
-             }*/
 
             i++;
          }
@@ -189,7 +183,6 @@ void draw_player()
 void draw()
 {
 
-    printf("2 = %f\n", g_player.y);
     draw_player();
     mlx_put_image_to_window(img.mlx_ptr, img.win_ptr, img.img, 0, 0);
 }
@@ -199,8 +192,6 @@ void ft_line(float angle,int radius)
     float nextX;
     float nextY;
     int k;
-    //g_player.x *= width  / 30;
-   // g_player.y *= height / 16;
 
     k = 0;
     while (k < radius)
@@ -223,8 +214,84 @@ void movement()
     move_player.rotationAngle += move_player.turnDirection * move_player.rotationSpeed;
     moveSteps = move_player.walkDirection * move_player.moveSpeed;
    
-    g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
-    g_player.y = nextY + (sin(move_player.rotationAngle) * moveSteps);
-
-
+    if (map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / (map_conf.height / 16)][(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / (map_conf.width / 30)] != 1)
+    {
+        g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
+        g_player.y = nextY + (sin(move_player.rotationAngle) * moveSteps);
+    }
 }
+
+void store_data(char *line, int i)
+{
+    int     c;
+    
+    c = 0;
+    if (line[i] != '\0' && line[i] == 'R')
+        {
+            printf("%s========>\n", line);
+             map_conf.data = ft_split(line + i, ' ');
+             map_conf.width = ft_atoi(map_conf.data[1]);
+             map_conf.height  = ft_atoi(map_conf.data[2]);  
+        }
+    if (line[i] != '\0' && line[i] == 'N' && line [i + 1] == 'O')
+            printf("%s|-------|\n", fill_textures(map_conf.north_texture, line, i));
+    if (line[i] != '\0' && line[i] == 'S' && line [i + 1] == 'O')
+            printf("%s|-------|\n", fill_textures(map_conf.south_texture, line, i));
+    if (line[i] != '\0' && line[i] == 'W' && line [i + 1] == 'E')
+            printf("%s|-------|\n", fill_textures(map_conf.west_texture, line, i));     
+    if (line[i] != '\0' && line[i] == 'E' && line [i + 1] == 'A')
+            printf("%s|-------|\n", fill_textures(map_conf.east_texture, line, i));
+    if (line[i] != '\0' && line[i] == 'F')
+            fill_floor(line, i);
+    if (line[i] != '\0' && line[i] == 'C')
+            fill_ceilling(line, i);
+    if (line[i] != '\0' && (line[i] == '1' || line[i] == '0'))
+    {
+            creatingMap(line, i, c);
+            c++;
+    }
+}
+
+char  *fill_textures(char *texture, char *line, int i)
+{
+     i += 2;
+        while (line[i] == ' ')
+            i++;
+    texture = ft_strdup_(line + i);
+    return (texture);
+}
+
+void fill_floor(char *line, int i)
+{
+    i +=2;
+        while (line[i] == ' ')
+            i++;
+    map_conf.data   = ft_split(line + i, ',');
+    map_conf.rFloor = ft_atoi(map_conf.data[0]);
+    map_conf.gFloor = ft_atoi(map_conf.data[1]);
+    map_conf.bFloor = ft_atoi(map_conf.data[2]);
+}
+
+void fill_ceilling(char *line, int i)
+{
+    i +=2;
+        while (line[i] == ' ')
+            i++;
+    map_conf.data     = ft_split(line + i, ',');
+    map_conf.ceilingR = ft_atoi(map_conf.data[0]);
+    map_conf.ceilingG = ft_atoi(map_conf.data[1]);
+    map_conf.ceilingB = ft_atoi(map_conf.data[2]);
+    
+}
+
+void creatingMap(char *line, int i, int c)
+{
+    char *map_line;
+    size_t lenght;
+
+    world = malloc(sizeof(char **));
+    world[c] = ft_strdup(line + i);
+    //world  = malloc(sizeof (char) * lenght);
+    printf("======>%zu\n", lenght);
+}
+

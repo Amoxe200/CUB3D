@@ -6,7 +6,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <math.h>
+#include <fcntl.h>
 #include "getNextLine/get_next_line.h"
+#include "libft/libft.h"
+
 
 #define     UP_DIR 13
 #define     DOWN_DIR 1
@@ -48,18 +51,40 @@ typedef struct mv_player
     float rotationSpeed;  
 }               cls_player;
 
+typedef struct map_config
+{
+    char **data;
+    int height;
+    int width;
+    int rFloor;
+    int gFloor;
+    int bFloor;
+    char *north_texture;
+    char *west_texture;
+    char *east_texture;
+    char *south_texture;
+    char *sprite_texture;
+    int ceilingR;
+    int ceilingG;
+    int ceilingB;
+
+   
+}               config_map;
+
+
 m_player        g_player;
 t_data          img;
 cls_player      move_player;
+config_map      map_conf;
 
 
 
 // int height  = 1080;
 // int width   = 1920;
-int height;
-int width;
+
 void my_mlx_pixel_put(t_data *data,  int x,  int y,  int color);
 int map[16][30];
+char **world;
 void draw();
 void draw_square(int x, int y, t_data data, int color);
 void draw_circle(int x, int y, t_data data, int color);
@@ -71,5 +96,9 @@ void ft_line(float angle,int radius);
 void turnDirect();
 void movement();
 void checkWall();
-
+void store_data(char *line, int i);
+char *fill_textures(char *texture, char *line, int i);
+void fill_floor(char *line, int i);
+void fill_ceilling(char *line, int i);
+void creatingMap(char *line, int i, int c);
 #endif
