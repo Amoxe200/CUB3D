@@ -55,6 +55,7 @@ typedef struct map_config
 {
     char **data;
     int height;
+    char *wlrd;
     int width;
     int rFloor;
     int gFloor;
@@ -67,7 +68,8 @@ typedef struct map_config
     int ceilingR;
     int ceilingG;
     int ceilingB;
-
+    int numHeight;
+    int numWidth;
    
 }               config_map;
 
@@ -77,6 +79,7 @@ t_data          img;
 cls_player      move_player;
 config_map      map_conf;
 
+int g_tmp_width;
 
 
 // int height  = 1080;
@@ -100,5 +103,7 @@ void store_data(char *line, int i);
 char *fill_textures(char *texture, char *line, int i);
 void fill_floor(char *line, int i);
 void fill_ceilling(char *line, int i);
-void creatingMap(char *line, int i, int c);
+void creatingMap(char *line, int i);
+void ft_field(float angle, int radius);
+size_t count_line_skip_space(const char *str);
 #endif

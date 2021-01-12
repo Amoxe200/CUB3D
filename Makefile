@@ -14,7 +14,7 @@ all: $(NAME)
 $(NAME):
 	@$(CC) $(Src) $(Search) $(FindLib) $(FrameWroks) $(SegfaultSani)
 fclean:
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 re: fclean all
 run: re
-	./a.out
+	@./a.out

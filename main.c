@@ -4,7 +4,7 @@
 
 void ft_init()
 {
-   // map_conf.height  = 1080;
+    //map_conf.height  = 1080;
     //map_conf.width   = 1920;
     move_player.radius = 3;
     move_player.turnDirection = 0;
@@ -17,6 +17,9 @@ void ft_init()
 
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr, map_conf.width, map_conf.height, "AMOXE");
+  
+
+   
    // img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
     //img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
    
@@ -31,18 +34,42 @@ int main()
     fd = open ("file.cub", O_RDONLY);
     i = 0;
     char *line;
+    map_conf.numHeight = 0;
+    map_conf.numWidth = 0;
+    g_tmp_width = 0;
+    map_conf.wlrd = "";
     while (get_next_line(fd, &line) != 0)
     {
         
         i = 0;
         while (line[i] == ' ')
-            i++; 
+            i++;
+        
         store_data(line, i);
     }
-    
+    if (line != NULL && line[0] != '\0')
+    {
+        i = 0;
+        while (line[i] == ' ')
+            i++;
+        
+        store_data(line, i);
+    }
+        // printf("last line => %s\n", line);
+      world = ft_split(map_conf.wlrd, '\n');
+    //   int h ;
+    //   h  = 0;
+    //   while (world[h])
+    //   {
+    //     printf("====>%s\n", world[h]);
+    //     h++;  
+    //   }
+        
+    // printf("height = %d|width = %d| \n", map_conf.numHeight, g_tmp_width);
     ft_init();
     draw_map();
 	mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
     mlx_loop(img.mlx_ptr);
+    
     return 0;
 }
