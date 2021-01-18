@@ -4,8 +4,6 @@
 
 void ft_init()
 {
-    //map_conf.height  = 1080;
-    //map_conf.width   = 1920;
     move_player.radius = 3;
     move_player.turnDirection = 0;
     move_player.walkDirection = 0;
@@ -14,15 +12,12 @@ void ft_init()
     move_player.rotationSpeed = 10 * (M_PI / 180);
     g_player.x = 13 * (map_conf.width / 30);
     g_player.y = 7 * (map_conf.height / 16);
+    ray_config.fov_angle = 60 * (M_PI / 180);
+    ray_config.wall_strip_width = 1;
+    ray_config.num_of_rays  = map_conf.width / ray_config.wall_strip_width;
 
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr, map_conf.width, map_conf.height, "AMOXE");
-  
-
-   
-   // img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
-    //img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
-   
 }
 
 

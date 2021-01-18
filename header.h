@@ -17,7 +17,7 @@
 #define     RIGHT_ARROW 124
 #define     RIGHT_DIR 2
 #define     LEFT_DIR 0
-
+#define     TILE_SIZE 64
 
 typedef struct  s_data
 {
@@ -73,11 +73,20 @@ typedef struct map_config
    
 }               config_map;
 
+typedef struct ray_param
+{
+   float fov_angle;
+   int wall_strip_width;
+   int num_of_rays;
+
+}               ray_conf;
+
 
 m_player        g_player;
 t_data          img;
 cls_player      move_player;
 config_map      map_conf;
+ray_conf        ray_config;
 
 int g_tmp_width;
 
@@ -95,7 +104,7 @@ void draw_map();
 int onClickListner(int keycode);
 void draw_player();
 void movePlayer();
-void ft_line(float angle,int radius);
+void ft_line(float angle,int radius, int color);
 void turnDirect();
 void movement();
 void checkWall();
@@ -104,6 +113,6 @@ char *fill_textures(char *texture, char *line, int i);
 void fill_floor(char *line, int i);
 void fill_ceilling(char *line, int i);
 void creatingMap(char *line, int i);
-void ft_field(float angle, int radius);
 size_t count_line_skip_space(const char *str);
+void ray_cast();
 #endif

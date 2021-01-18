@@ -7,130 +7,6 @@ void        my_mlx_pixel_put(t_data *data,  int x,  int y,  int color)
             data->addr[y * map_conf.width + x] = color;
 }
 
-// int map[map_conf.numHeight][g_tmp_width] =
-// {
-//         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-//         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//         {1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,1},
-//         {1,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0,1},
-//         {1,0,0,0,0,1,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1},
-//         {1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1},
-//         {1,0,0,0,0,1,0,0,1,0,0,0,0,2,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1},
-//         {1,0,0,0,0,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//         {1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,1},
-//         {1,0,0,0,0,1,1,1,1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,1},
-//         {1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1},
-//         {1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,1},
-//         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//         {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-//         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-        
-// };
-
-void draw_square(int x, int y, t_data data, int color)
-{
-    int i;
-    int j;
-    int c;
-    int d;
-
-    i = (map_conf.width / g_tmp_width) * x;
-    c = i;
-    j = (map_conf.height / map_conf.numHeight) * y;
-    d = j;
-
-    while (j <  d + (map_conf.height / map_conf.numHeight))
-    {
-        i = c;
-        while (i < c + (map_conf.width / g_tmp_width))
-        {
-            my_mlx_pixel_put(&data, i, j, color);
-            i++;
-        }
-        j++;
-    }
-}
-
-void draw_circle(int x, int y, t_data data, int color)
-{
-    int     radius;
-    float   angle;
-    float   i;
-    float   j;
-
-    angle = 0;
-    while (angle < 360)
-    {
-        radius = 0;
-        while (radius < 10)
-        {
-            i = x *  /*g_player.mv_x +*/ radius*cos(angle * (M_PI/180));
-            j = y * /*g_player.mv_y + */ radius*sin(angle*  (M_PI/180));
-            my_mlx_pixel_put(&data, i, j, 0x662E9B);
-            radius++;
-        }
-        angle++;
-    }
-    //ft_line(move_player.rotationAngle,radius);
-}
-
-void circle(int x, int y)
-{
-    int radius;
-    float angle;
-    
-    radius = 10;
-    angle = 0;
-
-    while (angle < 2 * M_PI)
-    {
-        ft_line(angle,radius);
-         angle += M_PI / 180;
-    }
-    ft_field(move_player.rotationAngle,150);
-}
-
-void draw_map()
-{
-    int i;
-    int j;
-    int color;
-
-    img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
-    img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
-   
-     j = 0;
-     
-    // while (j < map_conf.numHeight)
-    //     printf("|%s|\n", world[j++]);
-
-
-     while (j < map_conf.numHeight)
-     {
-         i = 0;
-         while (i < g_tmp_width)
-         {
-
-            if (i >= ft_strlen(world[j]) || world[j][i] != '1')
-            {
-                color = 0x000000;
-				draw_square(i, j, img, color);
-            }
-
-            else
-			 {
-				color = 0xFF0000;
-				draw_square(i, j, img, color);
-			 }  
-            
-            i++;
-         }
-        j++;
-     }
-     draw();
-}
-
 void    reset(int keycode)
 {
    if (keycode == UP_DIR) // w
@@ -178,47 +54,27 @@ int onClickListner(int keycode)
         return 0;
 }
 
-void draw_player()
+void ray_cast()
 {
+    int collumnId ;
+    float rayAngle;
+    int counter;
     int color;
-    color = 0x662E9B;
-   
-    circle(g_player.last_x, g_player.last_y);
-    
-}
-void draw()
-{
+     
+    collumnId = 0;
+    rayAngle = move_player.rotationAngle - (ray_config.fov_angle / 2);
+    counter = 0;
+    color = 0xECA72C;
 
-    draw_player();
-    mlx_put_image_to_window(img.mlx_ptr, img.win_ptr, img.img, 0, 0);
-}
-
-void ft_line(float angle,int radius)
-{
-    float nextX;
-    float nextY;
-    int k;
-
-    k = 0;
-    while (k < radius)
-        { 
-            nextX = g_player.x + cos(angle) * k;
-            nextY = g_player.y + sin(angle) * k;
-            my_mlx_pixel_put(&img, nextX, nextY, 0x662E9B);
-            k++;
-        }
-}
-
-void ft_field(float angle, int radius)
-{
-    double A = angle - (M_PI/6);
-    double add = (M_PI/3)/map_conf.width;
-    while (A < angle + (M_PI/6))
+    while (counter < 1)
     {
-        ft_line(A, radius);
-        A += add;
+        ft_line(rayAngle, 150, color);
+        rayAngle +=  ray_config.fov_angle / ray_config.num_of_rays;
+        counter++;
+        collumnId++;
     }
 }
+
 
 void movement()
 {
