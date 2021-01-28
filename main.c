@@ -10,8 +10,8 @@ void ft_init()
     move_player.rotationAngle = M_PI / 2;
     move_player.moveSpeed     = 20.0;
     move_player.rotationSpeed = 10 * (M_PI / 180);
-    g_player.x = 13 * (map_conf.width / 30);
-    g_player.y = 7 * (map_conf.height / 16);
+    g_player.x = 15 * TILE_SIZE;
+    g_player.y = 9 * TILE_SIZE;
     ray_config.fov_angle = 60 * (M_PI / 180);
     ray_config.wall_strip_width = 1;
     ray_config.num_of_rays  = map_conf.width / ray_config.wall_strip_width;

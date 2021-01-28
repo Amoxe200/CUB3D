@@ -7,15 +7,15 @@ void draw_square(int x, int y, t_data data, int color)
     int c;
     int d;
 
-    i = (map_conf.width / g_tmp_width) * x;
+    i = TILE_SIZE * x;
     c = i;
-    j = (map_conf.height / map_conf.numHeight) * y;
+    j = TILE_SIZE * y;
     d = j;
 
-    while (j <  d + (map_conf.height / map_conf.numHeight))
+    while (j <  d + TILE_SIZE)
     {
         i = c;
-        while (i < c + (map_conf.width / g_tmp_width))
+        while (i < c + TILE_SIZE)
         {
             my_mlx_pixel_put(&data, i, j, color);
             i++;

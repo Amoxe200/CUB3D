@@ -73,6 +73,7 @@ void ray_cast()
         counter++;
         collumnId++;
     }
+    angleSanitizer(rayAngle);
 }
 
 
@@ -87,7 +88,7 @@ void movement()
     move_player.rotationAngle += move_player.turnDirection * move_player.rotationSpeed;
     moveSteps = move_player.walkDirection * move_player.moveSpeed;
    
-    if (world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / (map_conf.height / map_conf.numHeight)][(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / (map_conf.width / g_tmp_width)] != '1')
+    if (world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE][(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1')
     {
         g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
         g_player.y = nextY + (sin(move_player.rotationAngle) * moveSteps);
@@ -108,16 +109,12 @@ void store_data(char *line, int i)
         }
 
     if (line[i] != '\0' && line[i] == 'N' && line [i + 1] == 'O')
-            // printf("%s|-------|\n", fill_textures(map_conf.north_texture, line, i));
         fill_textures(map_conf.north_texture, line, i);
     if (line[i] != '\0' && line[i] == 'S' && line [i + 1] == 'O')
-            // printf("%s|-------|\n", fill_textures(map_conf.south_texture, line, i));
         fill_textures(map_conf.south_texture, line, i);
     if (line[i] != '\0' && line[i] == 'W' && line [i + 1] == 'E')
-            // printf("%s|-------|\n", fill_textures(map_conf.west_texture, line, i));     
         fill_textures(map_conf.west_texture, line, i);    
     if (line[i] != '\0' && line[i] == 'E' && line [i + 1] == 'A')
-            // printf("%s|-------|\n", fill_textures(map_conf.east_texture, line, i));
         fill_textures(map_conf.east_texture, line, i);
     if (line[i] != '\0' && line[i] == 'F')
             fill_floor(line, i);
@@ -179,3 +176,11 @@ void creatingMap(char *line, int i)
     map_conf.numHeight++;
 }
 
+double angleSanitizer(double angle)
+{
+    angle = fmod(fabs(angle), (2 * M_PI));
+     
+            angle = (2 * M_PI) + angle;
+    printf("%lf\n", angle * (180 / M_PI));
+    return angle;
+}

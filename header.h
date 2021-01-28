@@ -115,4 +115,5 @@ void fill_ceilling(char *line, int i);
 void creatingMap(char *line, int i);
 size_t count_line_skip_space(const char *str);
 void ray_cast();
+double angleSanitizer(double angle);
 #endif
