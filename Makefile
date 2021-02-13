@@ -17,4 +17,10 @@ fclean:
 	@rm -rf $(NAME)
 re: fclean all
 run: re
-	@./a.out
+	@./a.out | cat -e
+
+
+push:
+	@git add .
+	@git commit -m "$(m)"
+	@git push origin main

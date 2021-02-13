@@ -16,6 +16,7 @@
 #define     LEFT_ARROW 123
 #define     RIGHT_ARROW 124
 #define     RIGHT_DIR 2
+#define     ECHAP 53
 #define     LEFT_DIR 0
 #define     TILE_SIZE 64
 
@@ -78,15 +79,31 @@ typedef struct ray_param
    float fov_angle;
    int wall_strip_width;
    int num_of_rays;
-
+   float ray_angle_san;
+    char **flt_map;
 }               ray_conf;
 
+typedef struct ray_track
+{
+    float wallHitXHorz;
+    float wallHitYHorz;
+    float wallHitXVert;
+    float wallHitYVert;
+    float distanceHorz;
+    float distanceVertc;
+    int isRayFacingDown;
+    int isRayFacingUp;
+    int isRayFacingLeft;
+    int isRayFacingRight;
+
+}               track_ray;
 
 m_player        g_player;
 t_data          img;
 cls_player      move_player;
 config_map      map_conf;
 ray_conf        ray_config;
+track_ray       track_the_ray;
 
 int g_tmp_width;
 
@@ -95,7 +112,6 @@ int g_tmp_width;
 // int width   = 1920;
 
 void my_mlx_pixel_put(t_data *data,  int x,  int y,  int color);
-int map[16][30];
 char **world;
 void draw();
 void draw_square(int x, int y, t_data data, int color);
@@ -115,5 +131,17 @@ void fill_ceilling(char *line, int i);
 void creatingMap(char *line, int i);
 size_t count_line_skip_space(const char *str);
 void ray_cast();
-double angleSanitizer(double angle);
+void read_map(void);
+void init_pl(int y, int x);
+void fill_line(char **temp_map, int i);
+void    fill_map();
+void init_pl(int y, int x);
+double angleSanitizer(float angle);
+void checkTheHorzIntersection(float angle);
+void checkTheDirection(float angle);
+void checkDirectionIncrementSteps(float xStep, float yStep, float xIntersept, float yInterspet);
+void checkTheWallHitHorz(float xStep, float yStep, float xIntersept, float yIntersept);
+void draw_ray(float angle, float smallDist);
+void checkTheVertiInter(float angle);
+void checkTheWallHitVert(float xStep, float yStep, float xIntersept, float yIntersept);
 #endif
