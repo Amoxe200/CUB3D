@@ -60,6 +60,7 @@ void fill_line(char **temp_map, int i)
         world[i][j] = '1';
         j++;
     }
+        //printf("j %d\n", j);
 }
 int main()
 {
@@ -88,12 +89,28 @@ int main()
         
         store_data(line, i);
     }
-
+    //printf("%s\n",map_conf.wlrd);
+    i = 0;
+   // world = ft_split(map_conf.wlrd, '\n');
     fill_map();
     ft_init();
     draw_map();
     mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
     mlx_loop(img.mlx_ptr);
+    //             int k;
+    //     j = 0;
+    // k = 0;
+    //  while (k < map_conf.numHeight)
+    // {
+    //     j = 0;
+    //     while (j < g_tmp_width)
+    //     {
+    //         printf("%c", world[k][j]);
+    //         j++;
+    //     }
+    //     printf("\n");
+    //     k++;
+    // }
  
     return 0;
 }
