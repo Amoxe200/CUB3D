@@ -78,12 +78,18 @@ typedef struct map_config
 typedef struct ray_param
 {
    float fov_angle;
+<<<<<<< HEAD
    float wall_strip_width;
    float num_of_rays;
+=======
+   int wall_strip_width;
+   int num_of_rays;
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
    float ray_angle_san;
     char **flt_map;
 }               ray_conf;
 
+<<<<<<< HEAD
 // typedef struct ray_param
 // {
 //     float rayAngle;
@@ -98,6 +104,8 @@ typedef struct ray_param
 //     int wallHitContent;
 // }               ray_conf;
 
+=======
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
 typedef struct ray_track
 {
     float wallHitXHorz;
@@ -112,6 +120,7 @@ typedef struct ray_track
     int isRayFacingRight;
 
 }               track_ray;
+<<<<<<< HEAD
 
 typedef struct s_rays
 {
@@ -137,6 +146,8 @@ typedef struct	s_walls
 	float		projectedwallheight;
 	int			wallstripheight;
 }				t_walls;
+=======
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
 
 t_rays            *rays;
 m_player        g_player;
@@ -187,7 +198,10 @@ void checkTheWallHitHorz(float xStep, float yStep, float xIntersept, float yInte
 void draw_ray(float angle, float smallDist);
 void checkTheVertiInter(float angle);
 void checkTheWallHitVert(float xStep, float yStep, float xIntersept, float yIntersept);
+<<<<<<< HEAD
 void        cast_rays();
 int			wall_at(float x, float y);
 void render_wall(int counter, float smallDist);
+=======
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
 #endif

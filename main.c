@@ -9,9 +9,15 @@ void ft_init()
     move_player.walkDirection = 0;
     move_player.rotationAngle = 180 * (M_PI / 180.0);
     move_player.moveSpeed     = 20.0;
+<<<<<<< HEAD
     move_player.rotationSpeed = 5 * (M_PI / 180.0);
     ray_config.fov_angle = 60 * (M_PI / 180.0);
     ray_config.wall_strip_width = 10;
+=======
+    move_player.rotationSpeed = 10 * (M_PI / 180.0);
+    ray_config.fov_angle = 60 * (M_PI / 180.0);
+    ray_config.wall_strip_width = 1;
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
     ray_config.num_of_rays  = map_conf.width / ray_config.wall_strip_width;
     track_the_ray.distanceHorz = 0;
     track_the_ray.isRayFacingDown = 0;
@@ -19,6 +25,7 @@ void ft_init()
     track_the_ray.isRayFacingLeft = 0;
     track_the_ray.isRayFacingRight = 0;
     img.mlx_ptr =       mlx_init();
+<<<<<<< HEAD
     img.win_ptr =       mlx_new_window(img.mlx_ptr,map_conf.width, map_conf.height, "AMOXE");
 }
 
@@ -42,19 +49,52 @@ void    fill_map()
         i++;
     }
     //printf("%s\n",tmp_map[0]);
+=======
+    img.win_ptr =       mlx_new_window(img.mlx_ptr,
+    map_conf.width, map_conf.height, "AMOXE");
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
 }
 
 void fill_line(char **temp_map, int i)
 {
     int j;
 
+<<<<<<< HEAD
+=======
+void    fill_map()
+{
+    char **tmp_map;
+    int i;
+    int j;
+
+    tmp_map = ft_split(map_conf.wlrd, '\n');
+    world = malloc(map_conf.numHeight * sizeof(char *));
+    while (i < map_conf.numHeight)
+    {
+        // printf("%d\n", i);
+        world[i] = malloc(g_tmp_width * sizeof(char));
+        fill_line(tmp_map, i);
+        i++;
+    }
+    //printf("%s\n",tmp_map[0]);
+}
+
+void fill_line(char **temp_map, int i)
+{
+    int j;
+
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
     j = 0;
     while (temp_map[i][j])
     {   
         world[i][j] = temp_map[i][j];
         if (ft_strchr("NSEW", world[i][j]))
+<<<<<<< HEAD
         {       
                 printf("%c", world[i][j]);
+=======
+        {
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
                 init_pl(i, j);
                 world[i][j] = '0';
         }
@@ -125,5 +165,23 @@ int main()
     draw_map();
     mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
     mlx_loop(img.mlx_ptr);
+<<<<<<< HEAD
+=======
+    //             int k;
+    //     j = 0;
+    // k = 0;
+    //  while (k < map_conf.numHeight)
+    // {
+    //     j = 0;
+    //     while (j < g_tmp_width)
+    //     {
+    //         printf("%c", world[k][j]);
+    //         j++;
+    //     }
+    //     printf("\n");
+    //     k++;
+    // }
+ 
+>>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
     return 0;
 }
