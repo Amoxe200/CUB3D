@@ -78,18 +78,12 @@ typedef struct map_config
 typedef struct ray_param
 {
    float fov_angle;
-<<<<<<< HEAD
    float wall_strip_width;
    float num_of_rays;
-=======
-   int wall_strip_width;
-   int num_of_rays;
->>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
    float ray_angle_san;
     char **flt_map;
 }               ray_conf;
 
-<<<<<<< HEAD
 // typedef struct ray_param
 // {
 //     float rayAngle;
@@ -104,8 +98,6 @@ typedef struct ray_param
 //     int wallHitContent;
 // }               ray_conf;
 
-=======
->>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
 typedef struct ray_track
 {
     float wallHitXHorz;
@@ -120,38 +112,26 @@ typedef struct ray_track
     int isRayFacingRight;
 
 }               track_ray;
-<<<<<<< HEAD
 
-typedef struct s_rays
-{
-	float		ray_angle;
-	float		wallhit_x;
-	float		wallhit_y;
-	float		distance;
-	int			washit_vertical;
-	int			washit_horizontal;
-	int			israyfacing_up;
-	int			israyfacing_down;
-	int			israyfacing_left;
-	int			israyfacing_right;
-	int			wallhitcontent;
-	float		horzhitdistance;
-	float		verthitdistance;
-}               t_rays;
 
-typedef struct	s_walls
-{
-	float		perpdistance;
-	float		distanceprojplane;
-	float		projectedwallheight;
-	int			wallstripheight;
-}				t_walls;
-=======
->>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
+// typedef struct s_rays
+// {
+// 	float		ray_angle;
+// 	float		wallhit_x;
+// 	float		wallhit_y;
+// 	float		distance;
+// 	int			washit_vertical;
+// 	int			washit_horizontal;
+// 	int			israyfacing_up;
+// 	int			israyfacing_down;
+// 	int			israyfacing_left;
+// 	int			israyfacing_right;
+// 	int			wallhitcontent;
+// 	float		horzhitdistance;
+// 	float		verthitdistance;
+// }               t_rays;
 
-t_rays            *rays;
 m_player        g_player;
-t_walls         g_wall;
 t_data          img;
 cls_player      move_player;
 config_map      map_conf;
@@ -198,10 +178,8 @@ void checkTheWallHitHorz(float xStep, float yStep, float xIntersept, float yInte
 void draw_ray(float angle, float smallDist);
 void checkTheVertiInter(float angle);
 void checkTheWallHitVert(float xStep, float yStep, float xIntersept, float yIntersept);
-<<<<<<< HEAD
 void        cast_rays();
 int			wall_at(float x, float y);
 void render_wall(int counter, float smallDist);
-=======
->>>>>>> fac61a805d4ff0a64423490130c86d23f3b12fa5
+
 #endif

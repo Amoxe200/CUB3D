@@ -7,7 +7,7 @@ Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
 SegfaultSani = -fsanitize=address -g
-m = ray-casting_no_stable_version
+m = backup
 
 
 all: $(NAME)
