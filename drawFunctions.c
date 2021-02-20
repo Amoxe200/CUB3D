@@ -51,30 +51,31 @@ void draw_map()
 
     img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
     img.addr    =      (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_lenght, &img.endian);
-   
-     j = 0;
-
-     while (j < map_conf.numHeight)
+    //printf("World %s\n", world[1][]);
+    // printf("height %d\n",map_conf.numHeight);
+    // printf("width %d\n",g_tmp_width);
+    
+    i = 0;
+     while (i < map_conf.numHeight)
      {
-         i = 0;
-         while (i < g_tmp_width)
+         j = 0;
+         while (j < g_tmp_width)
          {
-
-            if (i >= ft_strlen(world[j]) || world[j][i] != '1')
+            if (world[i][j] != '1')
             {
                 color = 0x000000;
-				draw_square(i, j, img, color);
+				draw_square(j, i, img, color);
             }
 
             else
 			 {
 				color = 0x0E3B43;
-				draw_square(i, j, img, color);
+				draw_square(j, i, img, color);
 			 }  
             
-            i++;
+            j++;
          }
-        j++;
+        i++;
      }
      draw();
 }
@@ -93,6 +94,7 @@ void draw()
 {
 
     ray_cast();
+    // cast_rays();
     draw_player();
     mlx_put_image_to_window(img.mlx_ptr, img.win_ptr, img.img, 0, 0);
 }
