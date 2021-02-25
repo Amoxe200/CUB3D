@@ -10,17 +10,10 @@ void ft_init()
     move_player.rotationAngle = 180 * (M_PI / 180.0);
     move_player.moveSpeed     = 20.0;
     move_player.rotationSpeed = 10 * (M_PI / 180.0);
-    ray_config.fov_angle = 60 * (M_PI / 180.0);
-    ray_config.wall_strip_width = 1;
-    ray_config.num_of_rays  = map_conf.width / ray_config.wall_strip_width;
-    track_the_ray.distanceHorz = 0;
-    track_the_ray.isRayFacingDown = 0;
-    track_the_ray.isRayFacingUp = 0;
-    track_the_ray.isRayFacingLeft = 0;
-    track_the_ray.isRayFacingRight = 0;
+    
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr,
-    g_tmp_width, map_conf.numHeight, "AMOXE");
+    map_conf.width, map_conf.height, "AMOXE");
 }
 
 
@@ -60,10 +53,21 @@ void fill_line(char **temp_map, int i)
         world[i][j] = '1';
         j++;
     }
-        //printf("j %d\n", j);
 }
+int keys()
+{ 
+    mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
+    mlx_hook(img.win_ptr, 3, 0, reset_player, (void *)0);
+    render();
+    return 1;
+}
+
+
 int main()
 {
+    //remove it later
+    setbuf(stdout, NULL);
+    
     int fd;
     int i;
     fd = open ("file.cub", O_RDONLY);
@@ -89,28 +93,10 @@ int main()
         
         store_data(line, i);
     }
-    //printf("%s\n",map_conf.wlrd);
-    i = 0;
-   // world = ft_split(map_conf.wlrd, '\n');
     fill_map();
     ft_init();
-    draw_map();
-    mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
+    mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
     mlx_loop(img.mlx_ptr);
-    //             int k;
-    //     j = 0;
-    // k = 0;
-    //  while (k < map_conf.numHeight)
-    // {
-    //     j = 0;
-    //     while (j < g_tmp_width)
-    //     {
-    //         printf("%c", world[k][j]);
-    //         j++;
-    //     }
-    //     printf("\n");
-    //     k++;
-    // }
  
     return 0;
 }

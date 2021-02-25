@@ -50,6 +50,24 @@ int onClickListner(int keycode)
     reset(keycode);
         return 0;
 }
+int reset_player(int key)
+{
+	if (key == UP_DIR || key == DOWN_DIR)
+	{
+		move_player.walkDirection = 0;
+		//g_pl.moove_forward_or_backward = 0;
+	}
+	/*else if (key == RIGHT_ARROW)
+		g_pl.moove_right = 0;
+	else if (key == LEFT_ARROW)
+		g_pl.moove_left = 0;*/
+	else if (key == 124)
+		move_player.turnDirection = 0;
+	else if (key == 123)
+		move_player.turnDirection = 0;
+
+	return (0);
+}
 
 
 
@@ -181,188 +199,184 @@ void init_pl(int y, int x)
     g_player.x = x * TILE_SIZE + (TILE_SIZE / 2);
     g_player.y = y * TILE_SIZE + (TILE_SIZE / 2);
 }
+
 double angleSanitizer(float angle)
 {
-   angle = fmod(angle, (2 * M_PI));
-	angle += (angle < 0) ? (2 * M_PI) : 0;
-    return (angle);
+    angle = remainder(angle, 2 * M_PI);
+	if (angle < 0)
+	    angle += 2 * M_PI;
+    if (angle > 2 * M_PI)
+	    angle -= 2 * M_PI;
+	return (angle);
 }
-void ray_cast()
+
+void rays_init(ray_struct *rays)
 {
-    // draaw a ray return a normalized ray angle
-    int collumnId ;
+        rays->wall_strWidth = 10;
+        rays->angle_norm = move_player.rotationAngle - (rays -> fv_angle / 2);
+        rays->num_rays = map_conf.width;
+        rays->fv_angle = 60 * (M_PI / 180);
+}
+
+void castAllRays(ray_struct *rays)
+{ 
+    int i;
     float rayAngle;
-    int counter;
-    int color;
-    float smallDist;
-     
-    collumnId = 0;
-    rayAngle = move_player.rotationAngle - (ray_config.fov_angle / 2.0);
-    ray_config.ray_angle_san = rayAngle;
-    counter = 0;
-    color = 0xECA72C;
-
     
-    while (counter < ray_config.num_of_rays)
+    rays_init(rays);
+    
+    i = 0;
+    while (i < rays -> num_rays)
     {
-
-        ray_config.ray_angle_san = angleSanitizer(ray_config.ray_angle_san);
-        checkTheHorzIntersection(ray_config.ray_angle_san);
-        checkTheVertiInter(ray_config.ray_angle_san);
-        smallDist = (track_the_ray.distanceHorz > track_the_ray.distanceVertc) ? track_the_ray.distanceVertc : track_the_ray.distanceHorz;
-        draw_ray(ray_config.ray_angle_san, smallDist);
-        ray_config.ray_angle_san +=  ray_config.fov_angle / (float)ray_config.num_of_rays;
-        counter++;
-        collumnId++;
+        cast(rays);
+        rays->angle_norm += (rays->fv_angle / rays->num_rays);
+        i++;
     }
 }
+void checkTheRayDir(ray_struct *rays)
+{
+    rays -> isRayFacingDown = (rays -> angle_norm > 0 
+    && rays -> angle_norm < M_PI) ? 1 : 0;
+    rays -> isRayFacingUp = !rays -> isRayFacingDown;
+    rays -> isRayFacingRight = (rays -> angle_norm < 0.5 * M_PI
+    || rays -> angle_norm > 1.5 * M_PI) ? 1 : 0;
+    rays -> isRayFacingLeft = !rays -> isRayFacingRight;
+}   
 
-void checkTheHorzIntersection(float angle)
+void cast(ray_struct *rays)
+{
+    rays->angle_norm = angleSanitizer(rays->angle_norm);
+    checkTheRayDir(rays);
+    checkHorzInter(rays);
+    checkVertInter(rays);
+    calculDistance(rays);
+    draw_line(g_player.x, g_player.y, rays->wallHitX, rays->wallHitY);
+}
+
+void checkHorzInter(ray_struct *rays)
 {
     float xStep;
     float yStep;
-    float xIntersept;
-    float yIntersept;
+    float xInter;
+    float yInter;
+    float   xyInter[2];
 
-    checkTheDirection(angle);
-    if (track_the_ray.isRayFacingUp)
-        yIntersept = (floor(g_player.y / (float) TILE_SIZE) * (float) TILE_SIZE) - 1;
-    else if (track_the_ray.isRayFacingDown)
-        yIntersept = (floor(g_player.y / (float) TILE_SIZE) * (float) TILE_SIZE) + 64;
-    xIntersept = g_player.x + (g_player.y - yIntersept) / tan(angle);
-    yStep = (track_the_ray.isRayFacingUp) ? (TILE_SIZE * -1) : TILE_SIZE;
-    xStep = (float) TILE_SIZE / tan(angle);
-    checkTheWallHitHorz(xStep, yStep, xIntersept, yIntersept);
+
+    yInter = floor((g_player.y / TILE_SIZE)) * TILE_SIZE;
+    yInter += rays -> isRayFacingDown ? TILE_SIZE : 0;
+    xInter = g_player.x + (yInter - g_player.y) / tan(rays -> angle_norm);
+
+    yStep = TILE_SIZE;
+    yStep *= rays -> isRayFacingUp ? -1 : 1;
+    xStep = TILE_SIZE / tan(rays -> angle_norm);
+    xStep *= (rays -> isRayFacingLeft && xStep > 0) ? -1 : 1;
+    xStep *= (rays -> isRayFacingRight && xStep < 0) ? -1 : 1;
+    xyInter[0] = xInter; 
+    xyInter[1] = yInter;
+    checkWallHorz(xyInter, xStep, yStep, rays);
 }
 
-void checkTheDirection(float angle)
-{
-    if (angle > 0  && angle < M_PI)
-    {
-        track_the_ray.isRayFacingDown = 1;
-        track_the_ray.isRayFacingUp = 0;
-    }   
-    else
-    {
-        track_the_ray.isRayFacingUp    = 1;
-        track_the_ray.isRayFacingDown  = 0;
-    }
-        
-    if (angle < 0.5 * M_PI || angle > 1.5 * M_PI)
-    {
-        track_the_ray.isRayFacingRight = 1;
-        track_the_ray.isRayFacingLeft = 0;
-    }
-    else
-    {
-        track_the_ray.isRayFacingLeft = 1;
-        track_the_ray.isRayFacingRight = 0;
-    }
-        
-}
-
-void checkTheWallHitHorz(float xStep, float yStep, float xIntersept, float yIntersept)
+void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
 {
     float nextHorzTouchX;
     float nextHorzTouchY;
 
-    nextHorzTouchX = xIntersept;
-    nextHorzTouchY = yIntersept;
-    // printf("width %d\n\n", g_tmp_width);
-    // printf("height %d\n", map_conf.numHeight);
-    while (1)
-    {
-        if (nextHorzTouchX >= 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
-            nextHorzTouchY >= 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
-            {
-                 //printf("width %d \t map_conf.numHeight %d \n", g_tmp_width, map_conf.numHeight);
-                //printf("horzX -----> %d\t horzy ------> %d \n", (int)(nextHorzTouchX / TILE_SIZE), (int)(nextHorzTouchY / TILE_SIZE));
-                if (world[(int)(nextHorzTouchY/ TILE_SIZE)][(int)(nextHorzTouchX / TILE_SIZE)] == '1')
-                    {
+    nextHorzTouchX = xyInter[0];
+    nextHorzTouchY = xyInter[1];
+    rays -> foundHorzWallHit= 0;
+    rays -> horzwallHitX = 0;
+    rays -> horzwallHitY = 0;
 
-                        track_the_ray.wallHitXHorz = nextHorzTouchX;
-                        track_the_ray.wallHitYHorz = nextHorzTouchY;
-                        //my_mlx_pixel_put(&img, track_the_ray.wallHitXHorz, track_the_ray.wallHitYHorz, 0xd51b1b);
-                        track_the_ray.distanceHorz = sqrt(pow((g_player.x - track_the_ray.wallHitXHorz), 2) + pow((g_player.y - track_the_ray.wallHitYHorz), 2));
-                        break;
-                    }
-                else
-                {
-                        nextHorzTouchY += yStep;
-                        nextHorzTouchX += xStep;
-                }   
+    if (rays -> isRayFacingUp)
+        nextHorzTouchY--;
+    
+    while (nextHorzTouchX >= 0 && nextHorzTouchX <= g_tmp_width * TILE_SIZE &&
+            nextHorzTouchY >= 0 && nextHorzTouchY <= map_conf.numHeight * TILE_SIZE)
+    {
+            if (world[(int)nextHorzTouchY / TILE_SIZE][(int)nextHorzTouchX / TILE_SIZE] == '1')
+            {
+                rays -> foundHorzWallHit = 1;
+                rays -> horzwallHitX = nextHorzTouchX;
+                rays -> horzwallHitY = nextHorzTouchY;
+                break;
             }
             else
-               break;
+            {
+                nextHorzTouchX += xStep;
+                nextHorzTouchY += yStep;
+            }
     }
 }
 
-void draw_ray(float angle, float smallDist) 
-{
-    float nextX;
-    float nextY;
-    int k;
-    int color;
+void checkVertInter(ray_struct *rays)
+    {   
+        float xStep;
+        float yStep;
+        float xInter;
+        float yInter;
+        float   xyInter[2];
+        rays -> foundVertWallHit = 0;
+        rays -> vertwallHitX = 0;
+        rays -> vertwallHitY = 0;
 
-    k = 0;
-    color = 0xECA72C;
-    
-    while (k < smallDist)
-    {
-        nextX = g_player.x + cos(angle) * k;
-        nextY = g_player.y + sin(angle) * k;
-        my_mlx_pixel_put(&img, nextX, nextY, color);
-        k++;
+        xInter = floor((g_player.x / TILE_SIZE)) * TILE_SIZE;
+        xInter += rays -> isRayFacingRight ? TILE_SIZE : 0;
+        yInter = g_player.y + (xInter - g_player.x) * tan(rays -> angle_norm);
+
+        xStep = TILE_SIZE;
+        xStep *= rays -> isRayFacingLeft ? -1 : 1;
+        
+        yStep = TILE_SIZE * tan(rays -> angle_norm);
+        yStep *= (rays -> isRayFacingUp && yStep > 0) ? -1 : 1;
+        yStep *= (rays -> isRayFacingDown && yStep < 0) ? -1 : 1;
+        xyInter[0] = xInter; 
+        xyInter[1] = yInter;
+        checkWallVert(xyInter, xStep, yStep, rays);
     }
-}
 
-void checkTheVertiInter(float angle)
+void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays)
 {
-    float xStep;
-    float yStep;
-    float xIntersept;
-    float yIntersept;
-
-    checkTheDirection(angle);
-    if (track_the_ray.isRayFacingRight)
-        xIntersept = (floor(g_player.x / (float) TILE_SIZE) * (float)TILE_SIZE) + TILE_SIZE;
-    else if (track_the_ray.isRayFacingLeft)
-        xIntersept = (floor(g_player.x / (float)TILE_SIZE) * (float)TILE_SIZE) - 1;
-    yIntersept = g_player.y + (g_player.x - xIntersept) * tan(angle);
-    xStep = (track_the_ray.isRayFacingRight) ? TILE_SIZE : (TILE_SIZE * -1);
-    yStep = TILE_SIZE * tan(angle);
-    checkTheWallHitVert(xStep, yStep, xIntersept, yIntersept);
-  
-}
-
-void checkTheWallHitVert(float xStep, float yStep, float xIntersept, float yIntersept)
- {
-     float nextVertTouchX;
+    float nextVertTouchX;
     float nextVertTouchY;
 
-    nextVertTouchX = xIntersept;
-    nextVertTouchY = yIntersept;
-    while (1)
-    {
+    nextVertTouchX = xyInter[0];
+    nextVertTouchY = xyInter[1];
 
-    if (nextVertTouchX > 0 && nextVertTouchX < g_tmp_width * TILE_SIZE &&
-        nextVertTouchY > 0 && nextVertTouchY < map_conf.numHeight * TILE_SIZE)
-        {
-            if (world[(int)(nextVertTouchY/ TILE_SIZE)][(int)(nextVertTouchX / TILE_SIZE)] == '1')
-                {
-                    track_the_ray.wallHitXVert = nextVertTouchX;
-                    track_the_ray.wallHitYVert = nextVertTouchY;
-                    my_mlx_pixel_put(&img, track_the_ray.wallHitXVert, track_the_ray.wallHitYVert, 0xd51b1b);
-                    track_the_ray.distanceVertc = sqrt(pow((g_player.x - track_the_ray.wallHitXVert), 2) + pow((g_player.y - track_the_ray.wallHitYVert), 2));
-                    break;
-                }
+    if (rays -> isRayFacingLeft)
+        nextVertTouchX--;
+    while (nextVertTouchX >= 0 && nextVertTouchX <= g_tmp_width * TILE_SIZE &&
+            nextVertTouchY >= 0 && nextVertTouchY <= map_conf.numHeight * TILE_SIZE)
+    {
+            if (world[(int)nextVertTouchY / TILE_SIZE][(int)nextVertTouchX / TILE_SIZE] == '1')
+            {
+                rays -> foundVertWallHit = 1;
+                rays -> vertwallHitX = nextVertTouchX;
+                rays -> vertwallHitY = nextVertTouchY;
+                break;
+            }
             else
             {
-                    nextVertTouchY += yStep;
-                    nextVertTouchX += xStep;
-            }   
-        }
-        else
-            break;
+                nextVertTouchX += xStep;
+                nextVertTouchY += yStep;
+            }
     }
- }
+
+}
+
+void calculDistance(ray_struct *rays)
+{
+    float horzHitDistance;
+    float vertHitDistance;
+
+    horzHitDistance = (rays -> foundHorzWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> horzwallHitX, rays -> horzwallHitY) : INT_MAX;
+    vertHitDistance = (rays -> foundVertWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> vertwallHitX, rays -> vertwallHitY) : INT_MAX; 
+    rays -> wallHitX = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitX : rays -> vertwallHitX;
+    rays -> wallHitY = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitY : rays -> vertwallHitY;
+    rays -> distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
+    rays -> wasHitVertical = (vertHitDistance < horzHitDistance) ? 1 : 0;
+}
+
+double distanceBpoint(float x1, float y1, float x2, float y2)
+{
+    return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+}

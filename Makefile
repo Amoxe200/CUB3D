@@ -7,7 +7,7 @@ Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
 SegfaultSani = -fsanitize=address -g
-m = backup
+m = raycastWorkingFine
 
 
 all: $(NAME)
@@ -18,7 +18,7 @@ fclean:
 	@rm -rf $(NAME)
 re: fclean all
 run: re
-	@./a.out | cat -e
+	@./a.out
 
 
 push:

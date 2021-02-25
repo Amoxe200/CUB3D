@@ -77,7 +77,6 @@ void draw_map()
          }
         i++;
      }
-     draw();
 }
 
 
@@ -90,12 +89,31 @@ void draw_player()
     
 }
 
-void draw()
+// void render_rays(ray_struct *rays)
+// {
+//     int i;
+
+//     i = 0;
+//     while (i < map_conf.width - 1)
+//     {
+//         //printf("rays->wallhitx = %f\n", rays[i].wallHitX);
+//         //printf("rays->wallhity = %f\n", rays[i].wallHitY);
+        
+//         i++;
+//     }
+// }
+
+void render()
 {
 
-    ray_cast();
+    //ray_cast();
     // cast_rays();
+    ray_struct rays[g_tmp_width * TILE_SIZE];
+    
+    draw_map();
     draw_player();
+    castAllRays(rays);
+   // render_rays(rays);
     mlx_put_image_to_window(img.mlx_ptr, img.win_ptr, img.img, 0, 0);
 }
 
@@ -106,12 +124,65 @@ void ft_line(float angle,int radius, int color)
     int k;
 
     k = 0;
+    nextX = 0;
+    nextY = 0;
     
     while (k < radius)
         { 
             nextX = g_player.x + cos(angle) * k;
             nextY = g_player.y + sin(angle) * k;
+           
             my_mlx_pixel_put(&img, nextX, nextY, color);
             k++;
         }       
+}
+
+// void draw_line(float pX, float pY, float dX, float dY)
+// {
+//     float nextX;
+//     float nextY;
+//     float steps;
+//     float xInc;
+//     float yInc;
+//     float x;
+//     float y;
+//     int i;
+
+//     nextX = dX - pX;
+//     nextY = dY - pY;
+//     steps = fabs(nextX) > fabs(nextY) ? fabs(nextX) : fabs(nextY);
+//     xInc = nextX / steps;
+//     yInc = nextY / steps;
+//     x = pX;
+//     y = pY;
+//     i = 0;
+
+//     while (i < steps)
+//     {
+//         my_mlx_pixel_put(&img, round(x), round(y), 0xCE4760);
+//         x += xInc;
+//         y += yInc;
+//         i++;
+//     }
+// }
+
+void	draw_line(float pX, float pY, float dX, float dY)
+{
+	int		dx;
+	int		dy;
+	float	steps;
+	float	x_inc;
+	float	y_inc;
+
+	dx = dX - pX;
+	dy = dY - pY;
+	steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+	x_inc = dx / steps;
+	y_inc = dy / steps;
+	while (steps--)
+	{
+		my_mlx_pixel_put(&img, pX, pY, 0xCE4760);
+		pX += x_inc;
+		pY += y_inc;
+	}
 }
