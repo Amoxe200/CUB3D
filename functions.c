@@ -287,15 +287,21 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
     rays -> horzwallHitX = 0;
     rays -> horzwallHitY = 0;
 
-    if (rays -> isRayFacingUp)
-        nextHorzTouchY--;
+    //if (rays -> isRayFacingUp)
+      //  nextHorzTouchY--;
     
     while (nextHorzTouchX >= 0 && nextHorzTouchX <= g_tmp_width * TILE_SIZE &&
             nextHorzTouchY >= 0 && nextHorzTouchY <= map_conf.numHeight * TILE_SIZE)
     {
-            if (world[(int)nextHorzTouchY / TILE_SIZE][(int)nextHorzTouchX / TILE_SIZE] == '1')
+            float xToCheck;
+            float yToCheck;
+
+            xToCheck = nextHorzTouchX;
+            yToCheck = nextHorzTouchY + (rays -> isRayFacingUp ? -1 : 0);
+            if (world[(int)yToCheck / TILE_SIZE][(int)xToCheck/ TILE_SIZE] == '1')
             {
                 rays -> foundHorzWallHit = 1;
+                rays -> horzWallContent = world[(int)yToCheck/TILE_SIZE][(int)xToCheck/TILE_SIZE];
                 rays -> horzwallHitX = nextHorzTouchX;
                 rays -> horzwallHitY = nextHorzTouchY;
                 break;
@@ -322,10 +328,8 @@ void checkVertInter(ray_struct *rays)
         xInter = floor((g_player.x / TILE_SIZE)) * TILE_SIZE;
         xInter += rays -> isRayFacingRight ? TILE_SIZE : 0;
         yInter = g_player.y + (xInter - g_player.x) * tan(rays -> angle_norm);
-
         xStep = TILE_SIZE;
         xStep *= rays -> isRayFacingLeft ? -1 : 1;
-        
         yStep = TILE_SIZE * tan(rays -> angle_norm);
         yStep *= (rays -> isRayFacingUp && yStep > 0) ? -1 : 1;
         yStep *= (rays -> isRayFacingDown && yStep < 0) ? -1 : 1;
@@ -342,14 +346,20 @@ void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays)
     nextVertTouchX = xyInter[0];
     nextVertTouchY = xyInter[1];
 
-    if (rays -> isRayFacingLeft)
-        nextVertTouchX--;
+    //if (rays -> isRayFacingLeft)
+       //nextVertTouchX--;
     while (nextVertTouchX >= 0 && nextVertTouchX <= g_tmp_width * TILE_SIZE &&
             nextVertTouchY >= 0 && nextVertTouchY <= map_conf.numHeight * TILE_SIZE)
-    {
-            if (world[(int)nextVertTouchY / TILE_SIZE][(int)nextVertTouchX / TILE_SIZE] == '1')
+    {       
+        float ytoCheck;
+        float xtoCheck;
+
+        xtoCheck = nextVertTouchX + (rays -> isRayFacingLeft ? -1 : 0);
+        ytoCheck = nextVertTouchY;
+            if (world[(int)ytoCheck / TILE_SIZE][(int)xtoCheck / TILE_SIZE] == '1')
             {
                 rays -> foundVertWallHit = 1;
+                rays -> vertWallContent = world[(int)ytoCheck/TILE_SIZE][(int)xtoCheck/TILE_SIZE];
                 rays -> vertwallHitX = nextVertTouchX;
                 rays -> vertwallHitY = nextVertTouchY;
                 break;

@@ -90,7 +90,8 @@ typedef struct rays
 	int foundHorzWallHit;
 	int foundVertWallHit;
 	int wasHitVertical;
-	int wallHitContent;
+	int horzWallContent;
+	int vertWallContent;
 	float wallHitX;
 	float wallHitY;
 	float fv_angle;
