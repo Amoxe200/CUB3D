@@ -4,6 +4,7 @@
 
 void ft_init()
 {
+    int a;
     move_player.radius = 3;
     move_player.turnDirection = 0;
     move_player.walkDirection = 0;
@@ -14,6 +15,8 @@ void ft_init()
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr,
     map_conf.width, map_conf.height, "AMOXE");
+    img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
+    img.addr    =      (int *)mlx_get_data_addr(img.img, &a, &a, &a);
 }
 
 
@@ -58,6 +61,7 @@ int keys()
 { 
     mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
     mlx_hook(img.win_ptr, 3, 0, reset_player, (void *)0);
+    
     render();
     return 1;
 }
@@ -95,6 +99,7 @@ int main()
     }
     fill_map();
     ft_init();
+    
     mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
     mlx_loop(img.mlx_ptr);
  

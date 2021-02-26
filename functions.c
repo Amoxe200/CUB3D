@@ -5,7 +5,7 @@ void        my_mlx_pixel_put(t_data *data,  int x,  int y,  int color)
     // printf("%d \t %d \n", map_conf.width, map_conf.height);
     if (x < map_conf.width && y < map_conf.height)
         if (x >= 0 && y >= 0)
-            data->addr[y * map_conf.width+ x] = color;
+            data->addr[y * map_conf.width + x] = color;
 }
 
 void    reset(int keycode)
@@ -45,8 +45,8 @@ int onClickListner(int keycode)
     }
 
     movement();
-    mlx_destroy_image(img.mlx_ptr, img.img);
-    draw_map();
+    //mlx_destroy_image(img.mlx_ptr, img.img);
+    //draw_map();
     reset(keycode);
         return 0;
 }
@@ -92,17 +92,12 @@ void movement()
 
 void store_data(char *line, int i)
 {
-    int     c;
-    
-    c = 0;
     if (line[i] != '\0' && line[i] == 'R')
         {
-            // printf("%s========>\n", line);
              map_conf.data = ft_split(line + i, ' ');
              map_conf.width = ft_atoi(map_conf.data[1]);
              map_conf.height  = ft_atoi(map_conf.data[2]);  
         }
-
     if (line[i] != '\0' && line[i] == 'N' && line [i + 1] == 'O')
         fill_textures(map_conf.north_texture, line, i);
     if (line[i] != '\0' && line[i] == 'S' && line [i + 1] == 'O')
@@ -121,8 +116,6 @@ void store_data(char *line, int i)
             i++;
         creatingMap(line, i);
     }
-  
-   
 }
 
 char  *fill_textures(char *texture, char *line, int i)
@@ -228,7 +221,7 @@ void castAllRays(ray_struct *rays)
     i = 0;
     while (i < rays -> num_rays)
     {
-        cast(rays);
+        cast(rays, i);
         rays->angle_norm += (rays->fv_angle / rays->num_rays);
         i++;
     }
@@ -243,14 +236,14 @@ void checkTheRayDir(ray_struct *rays)
     rays -> isRayFacingLeft = !rays -> isRayFacingRight;
 }   
 
-void cast(ray_struct *rays)
+void cast(ray_struct *rays, int i)
 {
     rays->angle_norm = angleSanitizer(rays->angle_norm);
     checkTheRayDir(rays);
     checkHorzInter(rays);
     checkVertInter(rays);
-    calculDistance(rays);
-    draw_line(g_player.x, g_player.y, rays->wallHitX, rays->wallHitY);
+    calculDistance(rays, i);
+    // draw_line(g_player.x * nms, g_player.y * nms, rays[i].wallHitX * nms, rays[i].wallHitY * nms);
 }
 
 void checkHorzInter(ray_struct *rays)
@@ -287,11 +280,8 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
     rays -> horzwallHitX = 0;
     rays -> horzwallHitY = 0;
 
-    //if (rays -> isRayFacingUp)
-      //  nextHorzTouchY--;
-    
-    while (nextHorzTouchX >= 0 && nextHorzTouchX <= g_tmp_width * TILE_SIZE &&
-            nextHorzTouchY >= 0 && nextHorzTouchY <= map_conf.numHeight * TILE_SIZE)
+    while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
+            nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
     {
             float xToCheck;
             float yToCheck;
@@ -345,11 +335,9 @@ void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays)
 
     nextVertTouchX = xyInter[0];
     nextVertTouchY = xyInter[1];
-
-    //if (rays -> isRayFacingLeft)
-       //nextVertTouchX--;
-    while (nextVertTouchX >= 0 && nextVertTouchX <= g_tmp_width * TILE_SIZE &&
-            nextVertTouchY >= 0 && nextVertTouchY <= map_conf.numHeight * TILE_SIZE)
+    
+    while (nextVertTouchX > 0 && nextVertTouchX < g_tmp_width * TILE_SIZE &&
+            nextVertTouchY > 0 && nextVertTouchY < map_conf.numHeight * TILE_SIZE)
     {       
         float ytoCheck;
         float xtoCheck;
@@ -373,20 +361,74 @@ void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays)
 
 }
 
-void calculDistance(ray_struct *rays)
+void calculDistance(ray_struct *rays, int i)
 {
     float horzHitDistance;
     float vertHitDistance;
 
     horzHitDistance = (rays -> foundHorzWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> horzwallHitX, rays -> horzwallHitY) : INT_MAX;
     vertHitDistance = (rays -> foundVertWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> vertwallHitX, rays -> vertwallHitY) : INT_MAX; 
-    rays -> wallHitX = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitX : rays -> vertwallHitX;
-    rays -> wallHitY = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitY : rays -> vertwallHitY;
-    rays -> distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
-    rays -> wasHitVertical = (vertHitDistance < horzHitDistance) ? 1 : 0;
+    // rays -> wallHitX = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitX : rays -> vertwallHitX;
+    // rays -> wallHitY = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitY : rays -> vertwallHitY;
+    // rays -> distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
+    // rays -> wasHitVertical = (vertHitDistance < horzHitDistance) ? 1 : 0;
+    if (vertHitDistance < horzHitDistance)
+    {
+        rays[i].distance = vertHitDistance;
+        rays[i].wallHitX = rays -> vertwallHitX;
+        rays[i].wallHitY = rays -> vertwallHitY;
+        rays[i].wallHitContent = rays -> vertWallContent;
+        rays[i].wasHitVertical = 1;
+    }
+    else
+    {
+        rays[i].distance = horzHitDistance;
+        rays[i].wallHitX = rays -> horzwallHitX;
+        rays[i].wallHitY = rays -> horzwallHitY;
+        rays[i].wallHitContent = rays -> horzWallContent;
+        rays[i].wasHitVertical = 0;
+    }
+    store_array(rays, i);
+}
+
+void store_array(ray_struct *rays, int i)
+{
+    rays[i].angle_norm = rays -> angle_norm;
+    rays[i].isRayFacingDown = rays -> isRayFacingDown;
+    rays[i].isRayFacingUp = rays -> isRayFacingUp;
+    rays[i].isRayFacingLeft = rays -> isRayFacingLeft;
+    rays[i].isRayFacingRight = rays -> isRayFacingRight;
 }
 
 double distanceBpoint(float x1, float y1, float x2, float y2)
 {
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+}
+
+void render_wall(ray_struct *rays)
+{
+    int i;
+    int y;
+    i = 0;
+    
+    while (i < rays->num_rays)
+    {
+       
+        wall.distProjPlan = (map_conf.height / 2) / tan(rays -> fv_angle / 2);
+        wall.projWallHeight = (TILE_SIZE / rays[i].distance) * wall.distProjPlan;
+        wall.wallStrHeight = (int) wall.projWallHeight;
+        wall.wallTpPixel = (map_conf.height / 2) - (wall.wallStrHeight / 2);
+        wall.wallTpPixel = wall.wallTpPixel < 0 ? 0 : wall.wallTpPixel;
+        wall.wallBtPixel = (map_conf.height / 2) + (wall.wallStrHeight /2);
+        wall.wallBtPixel = wall.wallBtPixel > map_conf.height ? map_conf.height : wall.wallBtPixel;
+        
+        
+        y = wall.wallTpPixel;
+        while (y < wall.wallBtPixel)
+        {
+            my_mlx_pixel_put(&img, i, y, 0x2A324B);
+            y++;
+        }
+        i++;
+    }
 }

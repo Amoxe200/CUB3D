@@ -21,6 +21,7 @@
 #define     LEFT_DIR 0
 #define     TILE_SIZE 64
 #define     NUM_RAYS
+#define		nms 0.2
 
 typedef struct  s_data
 {
@@ -92,6 +93,7 @@ typedef struct rays
 	int wasHitVertical;
 	int horzWallContent;
 	int vertWallContent;
+	int wallHitContent;
 	float wallHitX;
 	float wallHitY;
 	float fv_angle;
@@ -100,12 +102,21 @@ typedef struct rays
 	float angle_norm;
 }               ray_struct;
 
+typedef struct walls
+{
+	float distProjPlan;
+	float projWallHeight;
+	int   wallStrHeight;
+	float wallTpPixel;
+	float wallBtPixel;
+
+}				wall_struct;
 
 m_player        g_player;
 t_data          img;
 cls_player      move_player;
 config_map      map_conf;
-
+wall_struct		wall;
 
 int g_tmp_width;
 
@@ -144,7 +155,7 @@ void	castAllRays();
 void	draw_ray_line(float rayAngle);
 void	init_pl(int y, int x);
 double	angleSanitizer(float angle);
-void cast(ray_struct *rays);
+void cast(ray_struct *rays, int i);
 void checkTheRayDir(ray_struct *rays);
 void castAllRays(ray_struct *rays);
 void checkHorzInter(ray_struct *rays);
@@ -152,6 +163,9 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays);
 void checkVertInter(ray_struct *rays);
 void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays);
 double distanceBpoint(float x1, float y1, float x2, float y2);
-void calculDistance(ray_struct *rays);
+void calculDistance(ray_struct *rays, int i);
 void initialize(ray_struct *rays);
+void store_array(ray_struct *rays, int i);
+void render_wall(ray_struct *rays);
+void render_ray(ray_struct *rays);
 #endif
