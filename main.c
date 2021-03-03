@@ -66,22 +66,13 @@ int keys()
     return 1;
 }
 
-
-int main()
-{
-    //remove it later
-    setbuf(stdout, NULL);
-    
-    int fd;
+void parse_file()
+{   
     int i;
-    fd = open ("file.cub", O_RDONLY);
-    i = 0;
+    int fd;
     char *line;
-    map_conf.numHeight = 0;
-    map_conf.numWidth = 0;
-    g_tmp_width = 0;
-    map_conf.wlrd = "";
-    while (get_next_line(fd, &line) != 0)
+
+     while (get_next_line(fd, &line) != 0)
     {
         
         i = 0;
@@ -97,6 +88,23 @@ int main()
         
         store_data(line, i);
     }
+}
+
+int main()
+{
+    //remove it later
+    setbuf(stdout, NULL);
+    
+    int fd;
+    int i;
+    fd = open ("file.cub", O_RDONLY);
+    i = 0;
+    char *line;
+    map_conf.numHeight = 0;
+    map_conf.numWidth = 0;
+    g_tmp_width = 0;
+    map_conf.wlrd = "";
+   
     fill_map();
     ft_init();
     
