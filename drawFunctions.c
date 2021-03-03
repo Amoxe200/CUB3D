@@ -49,11 +49,6 @@ void draw_map()
     int j;
     int color;
 
-   
-    //printf("World %s\n", world[1][]);
-    // printf("height %d\n",map_conf.numHeight);
-    // printf("width %d\n",g_tmp_width);
-    
     i = 0;
      while (i < map_conf.numHeight)
      {
@@ -88,19 +83,6 @@ void draw_player()
     
 }
 
-// void render_rays(ray_struct *rays)
-// {
-//     int i;
-
-//     i = 0;
-//     while (i < map_conf.width - 1)
-//     {
-//         //printf("rays->wallhitx = %f\n", rays[i].wallHitX);
-//         //printf("rays->wallhity = %f\n", rays[i].wallHitY);
-        
-//         i++;
-//     }
-// }
 void render_ray(ray_struct *rays)
 {
     int i;
@@ -112,6 +94,8 @@ void render_ray(ray_struct *rays)
          i++;
      }
 }
+
+
 void render()
 {
     int a;
@@ -147,35 +131,6 @@ void ft_line(float angle,int radius, int color)
             k++;
         }       
 }
-
-// void draw_line(float pX, float pY, float dX, float dY)
-// {
-//     float nextX;
-//     float nextY;
-//     float steps;
-//     float xInc;
-//     float yInc;
-//     float x;
-//     float y;
-//     int i;
-
-//     nextX = dX - pX;
-//     nextY = dY - pY;
-//     steps = fabs(nextX) > fabs(nextY) ? fabs(nextX) : fabs(nextY);
-//     xInc = nextX / steps;
-//     yInc = nextY / steps;
-//     x = pX;
-//     y = pY;
-//     i = 0;
-
-//     while (i < steps)
-//     {
-//         my_mlx_pixel_put(&img, round(x), round(y), 0xCE4760);
-//         x += xInc;
-//         y += yInc;
-//         i++;
-//     }
-// }
 
 void	draw_line(float pX, float pY, float dX, float dY)
 {

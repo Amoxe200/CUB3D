@@ -109,14 +109,24 @@ typedef struct walls
 	int   wallStrHeight;
 	float wallTpPixel;
 	float wallBtPixel;
+	float perpDistance;
 
 }				wall_struct;
+
+typedef struct texts
+{
+	int height;
+	int width;
+	void *data;
+}				text_str;
 
 m_player        g_player;
 t_data          img;
 cls_player      move_player;
 config_map      map_conf;
 wall_struct		wall;
+text_str		*texture;
+
 
 int g_tmp_width;
 

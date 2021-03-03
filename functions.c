@@ -57,10 +57,6 @@ int reset_player(int key)
 		move_player.walkDirection = 0;
 		//g_pl.moove_forward_or_backward = 0;
 	}
-	/*else if (key == RIGHT_ARROW)
-		g_pl.moove_right = 0;
-	else if (key == LEFT_ARROW)
-		g_pl.moove_left = 0;*/
 	else if (key == 124)
 		move_player.turnDirection = 0;
 	else if (key == 123)
@@ -156,7 +152,6 @@ void creatingMap(char *line, int i)
     char *tmp;
     if (save > g_tmp_width)
         g_tmp_width = save;
-    //printf("%d", g_tmp_width);
     tmp = map_conf.wlrd;
     map_conf.wlrd = ft_strjoin_(map_conf.wlrd, line);
     tmp = map_conf.wlrd;
@@ -368,10 +363,6 @@ void calculDistance(ray_struct *rays, int i)
 
     horzHitDistance = (rays -> foundHorzWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> horzwallHitX, rays -> horzwallHitY) : INT_MAX;
     vertHitDistance = (rays -> foundVertWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> vertwallHitX, rays -> vertwallHitY) : INT_MAX; 
-    // rays -> wallHitX = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitX : rays -> vertwallHitX;
-    // rays -> wallHitY = (horzHitDistance < vertHitDistance) ? rays -> horzwallHitY : rays -> vertwallHitY;
-    // rays -> distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
-    // rays -> wasHitVertical = (vertHitDistance < horzHitDistance) ? 1 : 0;
     if (vertHitDistance < horzHitDistance)
     {
         rays[i].distance = vertHitDistance;
@@ -413,9 +404,10 @@ void render_wall(ray_struct *rays)
     
     while (i < rays->num_rays)
     {
-       
+        y = 0;
+        wall.perpDistance = rays[i].distance * cos(rays[i].angle_norm - move_player.rotationAngle);
         wall.distProjPlan = (map_conf.height / 2) / tan(rays -> fv_angle / 2);
-        wall.projWallHeight = (TILE_SIZE / rays[i].distance) * wall.distProjPlan;
+        wall.projWallHeight = (TILE_SIZE / wall.perpDistance) * wall.distProjPlan;
         wall.wallStrHeight = (int) wall.projWallHeight;
         wall.wallTpPixel = (map_conf.height / 2) - (wall.wallStrHeight / 2);
         wall.wallTpPixel = wall.wallTpPixel < 0 ? 0 : wall.wallTpPixel;
@@ -423,12 +415,25 @@ void render_wall(ray_struct *rays)
         wall.wallBtPixel = wall.wallBtPixel > map_conf.height ? map_conf.height : wall.wallBtPixel;
         
         
+        while (y < wall.wallTpPixel)
+        {
+            my_mlx_pixel_put(&img, i, y, 0xC8C6D7);
+            y++;
+        }
         y = wall.wallTpPixel;
         while (y < wall.wallBtPixel)
         {
             my_mlx_pixel_put(&img, i, y, 0x2A324B);
             y++;
         }
+
+        y = wall.wallBtPixel;
+        while ( y < map_conf.height)
+        {
+            my_mlx_pixel_put(&img, i, y, 0xA49E8D);
+            y++;
+        }
         i++;
     }
 }
+
