@@ -66,29 +66,6 @@ int keys()
     return 1;
 }
 
-void parse_file()
-{   
-    int i;
-    int fd;
-    char *line;
-
-     while (get_next_line(fd, &line) != 0)
-    {
-        
-        i = 0;
-        while (line[i] == ' ')
-            i++;
-        store_data(line, i);
-    }
-    if (line != NULL && line[0] != '\0')
-    {
-        i = 0;
-        while (line[i] == ' ')
-            i++;
-        
-        store_data(line, i);
-    }
-}
 
 int main()
 {
@@ -104,7 +81,22 @@ int main()
     map_conf.numWidth = 0;
     g_tmp_width = 0;
     map_conf.wlrd = "";
-   
+    while (get_next_line(fd, &line) != 0)
+    {
+        
+        i = 0;
+        while (line[i] == ' ')
+            i++;
+        store_data(line, i);
+    }
+    if (line != NULL && line[0] != '\0')
+    {
+        i = 0;
+        while (line[i] == ' ')
+            i++;
+        
+        store_data(line, i);
+    }
     fill_map();
     ft_init();
     
