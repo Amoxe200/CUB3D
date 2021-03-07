@@ -113,26 +113,30 @@ typedef struct walls
 
 }				wall_struct;
 
-typedef struct texts
+
+typedef	struct txt
 {
-	int height;
-	int width;
-	void *data;
-}				text_str;
+	//t_data	nt;
+	
+	int offX;
+	int offY;
+	int dist;
+}			txt_data;
+
 
 m_player        g_player;
 t_data          img;
+t_data			nt;
+t_data			st;
+t_data			et;
+t_data			wt;
 cls_player      move_player;
 config_map      map_conf;
 wall_struct		wall;
-text_str		*texture;
+txt_data    	dtx;
 
 
 int g_tmp_width;
-
-
-// int height  = 1080;
-// int width   = 1920;
 char **world;
 
 void	my_mlx_pixel_put(t_data *data,  int x,  int y,  int color);
@@ -174,8 +178,13 @@ void checkVertInter(ray_struct *rays);
 void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays);
 double distanceBpoint(float x1, float y1, float x2, float y2);
 void calculDistance(ray_struct *rays, int i);
-void initialize(ray_struct *rays);
 void store_array(ray_struct *rays, int i);
 void render_wall(ray_struct *rays);
 void render_ray(ray_struct *rays);
+
+void    text_init(void);
+void collect_res(char *line, int i);
+void collect_text(char *line, int i);
+void check_map(char *line, int i);
+void initalize(ray_struct *rays, int i);
 #endif

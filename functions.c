@@ -88,38 +88,47 @@ void movement()
 
 void store_data(char *line, int i)
 {
+    collect_res(line, i);
+    collect_text(line, i);
+    check_map(line, i);
+}
+void collect_res(char *line, int i)
+{
     if (line[i] != '\0' && line[i] == 'R')
         {
              map_conf.data = ft_split(line + i, ' ');
              map_conf.width = ft_atoi(map_conf.data[1]);
              map_conf.height  = ft_atoi(map_conf.data[2]);  
         }
+	//printf("the line %s\n", line);
+}
+
+void collect_text(char *line, int i)
+{
     if (line[i] != '\0' && line[i] == 'N' && line [i + 1] == 'O')
-        fill_textures(map_conf.north_texture, line, i);
+       map_conf.north_texture =  fill_textures(map_conf.north_texture, line, i);
+	//printf("north %s\n", map_conf.north_texture);
     if (line[i] != '\0' && line[i] == 'S' && line [i + 1] == 'O')
-        fill_textures(map_conf.south_texture, line, i);
+       map_conf.south_texture =  fill_textures(map_conf.south_texture, line, i);
     if (line[i] != '\0' && line[i] == 'W' && line [i + 1] == 'E')
-        fill_textures(map_conf.west_texture, line, i);    
+       map_conf.west_texture =  fill_textures(map_conf.west_texture, line, i);    
     if (line[i] != '\0' && line[i] == 'E' && line [i + 1] == 'A')
-        fill_textures(map_conf.east_texture, line, i);
+       map_conf.east_texture =  fill_textures(map_conf.east_texture, line, i);
     if (line[i] != '\0' && line[i] == 'F')
-            fill_floor(line, i);
+        	fill_floor(line, i);
     if (line[i] != '\0' && line[i] == 'C')
             fill_ceilling(line, i);
-    if (line[i] != '\0' && line[i] == '1')
-    {       
-        while(line[i] == ' ')
-            i++;
-        creatingMap(line, i);
-    }
 }
 
 char  *fill_textures(char *texture, char *line, int i)
 {
+	//printf("texture %s\n", texture);
+	//printf("line %s\n", line);
      i += 2;
         while (line[i] == ' ')
             i++;
     texture = ft_strdup_(line + i);
+	//printf("texture %s\n", texture);
     return (texture);
 }
 
@@ -401,11 +410,52 @@ void render_wall(ray_struct *rays)
     int i;
     int y;
     i = 0;
-    
+
+	text_init();
     while (i < rays->num_rays)
     {
         y = 0;
-        wall.perpDistance = rays[i].distance * cos(rays[i].angle_norm - move_player.rotationAngle);
+        
+        initalize(rays, i);
+        
+        while (y < wall.wallTpPixel)
+        {
+            my_mlx_pixel_put(&img, i, y, 0x2C1111);
+            y++;
+        }
+        y = wall.wallTpPixel;
+        while (y < wall.wallBtPixel)
+        {
+            dtx.dist = y + (wall.wallStrHeight / 2) - (map_conf.height / 2);
+			dtx.offY = (int)(dtx.dist * ((float)64 / wall.wallStrHeight));
+            my_mlx_pixel_put(&img, i, y, assign_text(i, rays));
+            y++;
+        }
+
+        y = wall.wallBtPixel;
+        while ( y < map_conf.height)
+        {
+            my_mlx_pixel_put(&img, i, y, 0x110306);
+            y++;
+        }
+        i++;
+    }
+}
+
+
+void check_map(char *line, int i)
+{
+    if (line[i] != '\0' && line[i] == '1')
+    {       
+        while(line[i] == ' ')
+            i++;
+        creatingMap(line, i);
+    }
+}
+
+void initalize(ray_struct *rays, int i)
+{
+		wall.perpDistance = rays[i].distance * cos(rays[i].angle_norm - move_player.rotationAngle);
         wall.distProjPlan = (map_conf.height / 2) / tan(rays -> fv_angle / 2);
         wall.projWallHeight = (TILE_SIZE / wall.perpDistance) * wall.distProjPlan;
         wall.wallStrHeight = (int) wall.projWallHeight;
@@ -413,27 +463,60 @@ void render_wall(ray_struct *rays)
         wall.wallTpPixel = wall.wallTpPixel < 0 ? 0 : wall.wallTpPixel;
         wall.wallBtPixel = (map_conf.height / 2) + (wall.wallStrHeight /2);
         wall.wallBtPixel = wall.wallBtPixel > map_conf.height ? map_conf.height : wall.wallBtPixel;
-        
-        
-        while (y < wall.wallTpPixel)
-        {
-            my_mlx_pixel_put(&img, i, y, 0xC8C6D7);
-            y++;
-        }
-        y = wall.wallTpPixel;
-        while (y < wall.wallBtPixel)
-        {
-            my_mlx_pixel_put(&img, i, y, 0x2A324B);
-            y++;
-        }
-
-        y = wall.wallBtPixel;
-        while ( y < map_conf.height)
-        {
-            my_mlx_pixel_put(&img, i, y, 0xA49E8D);
-            y++;
-        }
-        i++;
-    }
+         if (rays[i].wasHitVertical)
+            dtx.offX = (int)rays[i].wallHitY % TILE_SIZE;
+         else
+             dtx.offX = (int)rays[i].wallHitX % TILE_SIZE;
 }
 
+void    text_init(void )
+{
+    int w;
+    int h;
+
+    if (!(nt.img))
+	    if (!(nt.img= mlx_xpm_file_to_image(img.mlx_ptr, map_conf.north_texture, &w, &h)))
+            printf("ERROR\n");
+    if (!(nt.addr))
+         nt.addr = (int *) mlx_get_data_addr(nt.img, &nt.bits_per_pixel, &nt.line_lenght, &nt.endian);
+   
+    if (!(st.img))
+        if (!(st.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.south_texture, &w, &h)))
+            printf("ERROR\n");
+    if (!(st.addr))
+        st.addr = (int *)mlx_get_data_addr(st.img, &st.bits_per_pixel, &st.line_lenght, &st.endian);
+   
+    if (!(wt.img))
+        if (!(wt.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.west_texture, &w, &h)))
+            printf("ERROR\n");
+    if (!(wt.addr))
+        wt.addr = (int *)mlx_get_data_addr(wt.img, &wt.bits_per_pixel, &wt.line_lenght, &wt.endian);
+   
+   
+    if (!(et.img))
+        if (!(et.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.east_texture, &w, &h)))
+            printf("ERROR\n");
+    if (!(et.addr))
+        et.addr = (int *)mlx_get_data_addr(et.img, &et.bits_per_pixel, &et.line_lenght, &et.endian);
+  
+}
+
+int assign_text(int i, ray_struct *rays)
+
+{
+	int *data[4];
+	int dst;
+	data[0] = nt.addr;
+	data[1] = st.addr;
+	data[2] = wt.addr;
+	data[3] = et.addr;
+   if (rays[i].isRayFacingUp && !rays[i].wasHitVertical)
+		dst = data[1][64 * dtx.offY + dtx.offX];
+	if (rays[i].isRayFacingLeft && rays[i].wasHitVertical)
+		dst = data[0][64 * dtx.offY + dtx.offX];
+	if (rays[i].isRayFacingDown && !rays[i].wasHitVertical)
+		dst = data[3][64 * dtx.offY + dtx.offX];
+	if (rays[i].isRayFacingRight && rays[i].wasHitVertical)
+		dst = data[2][64 * dtx.offY + dtx.offX];
+	return (dst);
+}
