@@ -49,6 +49,10 @@ void fill_line(char **temp_map, int i)
                 init_pl(i, j);
                 world[i][j] = '0';
         }
+        else if (ft_strchr("2", world[i][j]))
+            map_conf.spNumber++;
+            
+
         j++;
     }
     while (j < g_tmp_width)
@@ -83,8 +87,7 @@ void parse_file()
     {
         i = 0;
         while (line[i] == ' ')
-            i++;
-        
+            i++; 
         store_data(line, i);
     }
 
@@ -95,9 +98,9 @@ int main()
     //remove it later
     setbuf(stdout, NULL);
     
-    map_conf.numHeight = 0;
-    map_conf.numWidth = 0;
-    g_tmp_width = 0;
+    // map_conf.numHeight = 0;
+    // map_conf.numWidth = 0;
+    // g_tmp_width = 0;
     map_conf.wlrd = "";
     parse_file();
     fill_map();

@@ -24,6 +24,29 @@ void draw_square(int x, int y, t_data data, int color)
     }
 }
 
+void draw_px(int x, int y, t_data data, int color)
+{
+    int i;
+    int j;
+    int c;
+    int d;
+
+    i = TILE_SIZE * x;
+    c = i;
+    j = TILE_SIZE * y;
+    d = j;
+
+    while (j <  d + 2)
+    {
+        i = c;
+        while (i < c + 2)
+        {
+            my_mlx_pixel_put(&data, i * nms, j * nms, color);
+            i++;
+        }
+        j++;
+    }
+}
 
 
 void circle(int x, int y)
@@ -43,33 +66,35 @@ void circle(int x, int y)
     ft_line(move_player.rotationAngle, 150, 0x662E9B);
 }
 
-void draw_map()
+void draw_map(t_sprite *sprites)
 {
     int i;
     int j;
     int color;
+    int indx;
 
-    i = 0;
-     while (i < map_conf.numHeight)
+    j = 0;
+    indx = 0;
+     while (j < map_conf.numHeight)
      {
-         j = 0;
-         while (j < g_tmp_width)
+         i = 0;
+         while (i < g_tmp_width)
          {
-            if (world[i][j] != '1')
-            {
-                color = 0x605F5E;
-				draw_square(j , i, img, color);
-            }
-
-            else
+             if (world[j][i] == '1')
 			 {
 				color = 0x0E3B43;
-				draw_square(j, i, img, color);
-			 }  
-            
-            j++;
+				draw_square(i, j, img, color);
+			 }
+             else if (world[j][i] == '2')
+                store_the_spData(i, j, sprites, indx++);
+            else
+            {
+                color = 0x605F5E;
+				draw_square(i , j, img, color);
+            }
+            i++;
          }
-        i++;
+        j++;
      }
 }
 
@@ -99,16 +124,21 @@ void render_ray(ray_struct *rays)
 void render()
 {
     int a;
+
     ray_struct rays[g_tmp_width * TILE_SIZE];
+    t_sprite sprites[map_conf.spNumber];
+
 
     mlx_destroy_image(img.mlx_ptr, img.img);
     img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
     img.addr    =      (int *)mlx_get_data_addr(img.img, &a, &a, &a);
     castAllRays(rays);
     render_wall(rays);
-    draw_map();
-    draw_player();
+    draw_map(sprites);
+    renderSpProj(sprites);
     render_ray(rays);
+    draw_sprite_in_map(sprites);
+    draw_player();
     mlx_put_image_to_window(img.mlx_ptr, img.win_ptr, img.img, 0, 0);
 }
 

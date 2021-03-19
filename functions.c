@@ -114,6 +114,8 @@ void collect_text(char *line, int i)
        map_conf.west_texture =  fill_textures(map_conf.west_texture, line, i);    
     if (line[i] != '\0' && line[i] == 'E' && line [i + 1] == 'A')
        map_conf.east_texture =  fill_textures(map_conf.east_texture, line, i);
+    if (line[i] != '\0' && line[i] == 'S')
+        map_conf.sprite = fill_textures(map_conf.sprite, line, i);
     if (line[i] != '\0' && line[i] == 'F')
         	fill_floor(line, i);
     if (line[i] != '\0' && line[i] == 'C')
@@ -168,28 +170,28 @@ void creatingMap(char *line, int i)
     map_conf.numHeight++;
 }
 
-void read_map(void)
-{
-    int i;
-    int j;
+// void read_map(void)
+// {
+//     int i;
+//     int j;
 
-    j = 0;
-    i = 0;
-    while (world[i])
-    {
-        j = 0;
-        while (world[i][j])
-        {
-            if (ft_strchr("NSEW", world[i][j]))
-            {
-                init_pl(i, j);
-                break;
-            }
-            j++;
-        }
-        i++;
-    }
-}
+//     j = 0;
+//     i = 0;
+//     while (world[i])
+//     {
+//         j = 0;
+//         while (world[i][j])
+//         {
+//             if (ft_strchr("NSEW", world[i][j]))
+//             {
+//                 init_pl(i, j);
+//                 break;
+//             }
+//             j++;
+//         }
+//         i++;
+//     }
+// }
 
 void init_pl(int y, int x)
 {
@@ -209,10 +211,10 @@ double angleSanitizer(float angle)
 
 void rays_init(ray_struct *rays)
 {
-        rays->wall_strWidth = 10;
-        rays->angle_norm = move_player.rotationAngle - (rays -> fv_angle / 2);
+        rays->angle_norm = move_player.rotationAngle - (rays->fv_angle / 2);
         rays->num_rays = map_conf.width;
-        rays->fv_angle = 60 * (M_PI / 180);
+		rays->fv_angle = 60 * (M_PI / 180);
+        
 }
 
 void castAllRays(ray_struct *rays)
@@ -473,38 +475,39 @@ void    text_init(void )
 {
     int w;
     int h;
-
+        // change printf with print_error
     if (!(nt.img))
 	    if (!(nt.img= mlx_xpm_file_to_image(img.mlx_ptr, map_conf.north_texture, &w, &h)))
             printf("ERROR\n");
     if (!(nt.addr))
          nt.addr = (int *) mlx_get_data_addr(nt.img, &nt.bits_per_pixel, &nt.line_lenght, &nt.endian);
-   
     if (!(st.img))
         if (!(st.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.south_texture, &w, &h)))
             printf("ERROR\n");
     if (!(st.addr))
         st.addr = (int *)mlx_get_data_addr(st.img, &st.bits_per_pixel, &st.line_lenght, &st.endian);
-   
     if (!(wt.img))
         if (!(wt.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.west_texture, &w, &h)))
             printf("ERROR\n");
     if (!(wt.addr))
         wt.addr = (int *)mlx_get_data_addr(wt.img, &wt.bits_per_pixel, &wt.line_lenght, &wt.endian);
-   
-   
     if (!(et.img))
         if (!(et.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.east_texture, &w, &h)))
             printf("ERROR\n");
     if (!(et.addr))
         et.addr = (int *)mlx_get_data_addr(et.img, &et.bits_per_pixel, &et.line_lenght, &et.endian);
+    if (!(sp.img))
+        if (!(sp.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.sprite, &w, &h)))
+            printf("ERROR\n");
+    if (!(sp.addr))
+        sp.addr = (int *)mlx_get_data_addr(sp.img, &sp.bits_per_pixel, &sp.line_lenght, &sp.endian);
   
 }
 
 int assign_text(int i, ray_struct *rays)
 
 {
-	int *data[4];
+	int *data[5];
 	int dst;
 	data[0] = nt.addr;
 	data[1] = st.addr;
@@ -519,4 +522,127 @@ int assign_text(int i, ray_struct *rays)
 	if (rays[i].isRayFacingRight && rays[i].wasHitVertical)
 		dst = data[2][64 * dtx.offY + dtx.offX];
 	return (dst);
+}
+
+void renderSpProj(t_sprite  *sprites)
+{
+
+   t_sprite visibSprite[map_conf.spNumber];
+   int vbNumSp;
+   float angleSpPlayer;
+   int i;
+
+   vbNumSp = 0;
+   i = 0;
+
+   while (i < map_conf.spNumber)
+   {
+	   angleSpPlayer = move_player.rotationAngle - atan2(sprites[i].y - g_player.y, sprites[i].x - g_player.x);
+		
+		if (angleSpPlayer > M_PI)
+			angleSpPlayer -= (2 * M_PI);
+		if (angleSpPlayer < -M_PI)
+			angleSpPlayer += (2 * M_PI);
+		angleSpPlayer = fabs(angleSpPlayer);
+
+		if (angleSpPlayer < (FOV / 2))
+		{
+			sprites[i].visibSp = 1;
+            sprites[i].angle = angleSpPlayer;
+            // if something went wrong try to change the x and y position in the function
+            sprites[i].distance = distanceBpoint(sprites[i].x, sprites[i].y, g_player.x, g_player.y);
+			visibSprite[vbNumSp] = sprites[i];
+			vbNumSp++;
+		}
+		else
+			sprites[i].visibSp = 0;
+        printf("sprite distance = %f\n", sprites[0].distance);
+        renderSprite(sprites, vbNumSp, visibSprite);
+		i++;
+   }
+
+  
+}
+
+void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite)
+{
+    int i;
+    int y;
+    float spHeight;
+    float spWidth;
+    float distProjPlan;
+    float spTpY;
+    float spBtY;
+    float spriteAngle;
+    float spritePosX;
+    float spriteLeftX;
+    float SpriteRightX;
+    t_sprite sprite;
+    int x;
+
+    i = 0;
+    
+    // check with this part later and remove the y test 
+    distProjPlan = (map_conf.height / 2) / tan(FOV / 2);
+    while (i < vbNumber)
+    {
+        sprite = visibSprite[i];
+        
+        spHeight = (TILE_SIZE / sprite.distance) * distProjPlan;
+        spWidth = spHeight;
+        spTpY = (map_conf.height / 2) - (spHeight / 2);
+        spTpY = (spTpY < 0) ? 0 : spTpY;
+        spBtY = (map_conf.height / 2) + (spHeight / 2);
+        spBtY = (spBtY > map_conf.height) ? map_conf.height : spBtY;
+        spriteAngle = atan2(sprite.y - g_player.y, sprite.x - g_player.x) - move_player.rotationAngle;
+        spritePosX = tan(spriteAngle) * distProjPlan;
+        spriteLeftX = (map_conf.width / 2 ) + spritePosX;
+        SpriteRightX = spriteLeftX + spWidth;
+        x = spriteLeftX;
+        while (x < SpriteRightX)
+        {
+            y = spTpY;
+            while (y < spBtY)
+            {
+                if (x > 0 && x < map_conf.width && y > 0 && y < map_conf.height)
+                    my_mlx_pixel_put(&img, x, y, 0xFFF0000);
+                y++;
+            }
+            x++;
+        }
+        
+        
+        // define where to draw the sprite in X
+
+        i++;
+    }
+    
+}
+
+void draw_sprite_in_map(t_sprite *sprite)
+{
+    int k;
+    int i;
+    int j;
+
+    k = 0;
+	int colors;
+    
+    while (k < map_conf.spNumber)
+    {
+         i = sprite[k].x / TILE_SIZE;
+         j = sprite[k].y / TILE_SIZE;
+		 	if (sprite[k].visibSp == 1)
+         		colors = 0xEA3546;
+			else if (sprite[k].visibSp == 0)
+				colors = 0xF9C80E;
+			draw_square(i, j, img, colors);
+         k++;
+    }
+}
+void store_the_spData(int i, int j, t_sprite *sprites, int indx)
+{
+    int a;
+    sprites[indx].x = (i + 0.5) * TILE_SIZE;
+    sprites[indx].y = (j + 0.5) * TILE_SIZE;
 }

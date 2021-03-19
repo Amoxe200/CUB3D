@@ -22,6 +22,7 @@
 #define     TILE_SIZE 64
 #define     NUM_RAYS
 #define		nms 0.2
+#define		FOV (60 * (M_PI / 180))
 
 typedef struct  s_data
 {
@@ -69,12 +70,13 @@ typedef struct map_config
 	char *east_texture;
 	char *south_texture;
 	char *sprite_texture;
+	char *sprite;
 	int ceilingR;
 	int ceilingG;
 	int ceilingB;
 	int numHeight;
 	int numWidth;
-   
+	int spNumber;
 }               config_map;
 
 typedef struct rays
@@ -115,13 +117,22 @@ typedef struct walls
 
 
 typedef	struct txt
-{
-	//t_data	nt;
-	
+{	
 	int offX;
 	int offY;
 	int dist;
 }			txt_data;
+
+typedef struct sp
+{
+	int visibSp;
+	float x;
+	float y;
+	float dst;
+	float angleSpPlayer;
+	float angle;
+	float distance;
+}				t_sprite;
 
 
 m_player        g_player;
@@ -130,6 +141,7 @@ t_data			nt;
 t_data			st;
 t_data			et;
 t_data			wt;
+t_data			sp;
 cls_player      move_player;
 config_map      map_conf;
 wall_struct		wall;
@@ -139,12 +151,14 @@ txt_data    	dtx;
 int g_tmp_width;
 char **world;
 
+void collect_spData(t_sprite *sprite, int indx);
+void store_the_spData(int i, int j, t_sprite *sprites, int indx);
 void	my_mlx_pixel_put(t_data *data,  int x,  int y,  int color);
 void	render();
 void	draw_square(int x, int y, t_data data, int color);
 void	draw_circle(int x, int y, t_data data, int color);
-void	draw_map();
-void draw_line(float pX, float pY, float dX, float dY);
+void	draw_map(t_sprite *sprites);
+void 	draw_line(float pX, float pY, float dX, float dY);
 int		onClickListner(int keycode);
 void	draw_line(float xp, float yp, float xIntersept, float yIntersept);
 void	draw_player();
@@ -187,4 +201,9 @@ void collect_res(char *line, int i);
 void collect_text(char *line, int i);
 void check_map(char *line, int i);
 void initalize(ray_struct *rays, int i);
+void renderSpProj(t_sprite  *sprites);
+void renderMapsp( t_sprite *sprites, int i, int j, int indx);
+void draw_px(int x, int y, t_data data, int color);
+void draw_sprite_in_map(t_sprite *sprite);
+void renderSprite(t_sprite *sprite, int vbNumber, t_sprite *visibSprite);
 #endif
