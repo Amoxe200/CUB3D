@@ -7,7 +7,7 @@ Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
 SegfaultSani = -fsanitize=address -g
-m = spritesv1
+m = spriteFinished
 
 
 all: $(NAME)

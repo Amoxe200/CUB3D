@@ -513,7 +513,7 @@ int assign_text(int i, ray_struct *rays)
 	data[1] = st.addr;
 	data[2] = wt.addr;
 	data[3] = et.addr;
-   if (rays[i].isRayFacingUp && !rays[i].wasHitVertical)
+    if (rays[i].isRayFacingUp && !rays[i].wasHitVertical)
 		dst = data[1][64 * dtx.offY + dtx.offX];
 	if (rays[i].isRayFacingLeft && rays[i].wasHitVertical)
 		dst = data[0][64 * dtx.offY + dtx.offX];
@@ -524,7 +524,7 @@ int assign_text(int i, ray_struct *rays)
 	return (dst);
 }
 
-void renderSpProj(t_sprite  *sprites)
+void renderSpProj(t_sprite  *sprites, ray_struct *rays)
 {
 
    t_sprite visibSprite[map_conf.spNumber];
@@ -545,7 +545,7 @@ void renderSpProj(t_sprite  *sprites)
 			angleSpPlayer += (2 * M_PI);
 		angleSpPlayer = fabs(angleSpPlayer);
 
-		if (angleSpPlayer < (FOV / 2))
+		if (angleSpPlayer < (FOV / 2) + EPSILON)
 		{
 			sprites[i].visibSp = 1;
             sprites[i].angle = angleSpPlayer;
@@ -556,15 +556,40 @@ void renderSpProj(t_sprite  *sprites)
 		}
 		else
 			sprites[i].visibSp = 0;
-        printf("sprite distance = %f\n", sprites[0].distance);
-        renderSprite(sprites, vbNumSp, visibSprite);
+
+        sortSprite(sprites, vbNumSp, visibSprite);
+        renderSprite(sprites, vbNumSp, visibSprite, rays);
 		i++;
    }
-
-  
 }
 
-void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite)
+void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite)
+{
+    int i;
+    int j;
+    t_sprite temp;
+    i = 0;
+
+    while (i < vbNumber - 1)
+    {
+        j = i + 1;
+        while (j < vbNumber)
+        {
+            if (visibleSprite[i].distance < visibleSprite[j].distance)
+            {
+                temp = visibleSprite[i];
+                visibleSprite[i] = visibleSprite[j];
+                visibleSprite[j] = temp;
+            }
+            j++;
+        }
+        i++;
+        
+    }
+    
+}
+
+void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite, ray_struct *rays)
 {
     int i;
     int y;
@@ -577,18 +602,19 @@ void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite)
     float spritePosX;
     float spriteLeftX;
     float SpriteRightX;
+    float perdistance;
     t_sprite sprite;
     int x;
 
     i = 0;
     
     // check with this part later and remove the y test 
-    distProjPlan = (map_conf.height / 2) / tan(FOV / 2);
+    distProjPlan = (map_conf.width / 2) / tan(FOV / 2);
     while (i < vbNumber)
     {
         sprite = visibSprite[i];
-        
-        spHeight = (TILE_SIZE / sprite.distance) * distProjPlan;
+        perdistance = sprite.distance  * cos(sprite.angle);
+        spHeight = (TILE_SIZE / perdistance) * distProjPlan;
         spWidth = spHeight;
         spTpY = (map_conf.height / 2) - (spHeight / 2);
         spTpY = (spTpY < 0) ? 0 : spTpY;
@@ -596,27 +622,42 @@ void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite)
         spBtY = (spBtY > map_conf.height) ? map_conf.height : spBtY;
         spriteAngle = atan2(sprite.y - g_player.y, sprite.x - g_player.x) - move_player.rotationAngle;
         spritePosX = tan(spriteAngle) * distProjPlan;
-        spriteLeftX = (map_conf.width / 2 ) + spritePosX;
+        spriteLeftX = (map_conf.width / 2 ) + spritePosX - (spWidth / 2);
         SpriteRightX = spriteLeftX + spWidth;
         x = spriteLeftX;
         while (x < SpriteRightX)
         {
+            float texelWidth = (64 / spWidth);
+            sprite.offX = (x - spriteLeftX) * texelWidth; 
             y = spTpY;
             while (y < spBtY)
             {
+               
                 if (x > 0 && x < map_conf.width && y > 0 && y < map_conf.height)
-                    my_mlx_pixel_put(&img, x, y, 0xFFF0000);
+                {
+                        int distFtop = y + (spHeight / 2) - (map_conf.height / 2);
+                        sprite.offY = distFtop * (64 / spHeight);
+                        assigne_sprite(sprite, x, y, rays);
+                }
                 y++;
             }
             x++;
         }
-        
-        
-        // define where to draw the sprite in X
-
         i++;
     }
     
+}
+
+int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays)
+{
+    int *data[2];
+    int dst;
+    
+    data[1] = sp.addr;
+    dst = data[1][64 * sprite.offY + sprite.offX];
+    if (sprite.distance < rays[x].distance && dst != 0xFF00FF)
+        my_mlx_pixel_put(&img, x, y, dst);
+    return (dst);
 }
 
 void draw_sprite_in_map(t_sprite *sprite)
@@ -640,6 +681,8 @@ void draw_sprite_in_map(t_sprite *sprite)
          k++;
     }
 }
+
+
 void store_the_spData(int i, int j, t_sprite *sprites, int indx)
 {
     int a;

@@ -23,6 +23,7 @@
 #define     NUM_RAYS
 #define		nms 0.2
 #define		FOV (60 * (M_PI / 180))
+#define		EPSILON 0.2
 
 typedef struct  s_data
 {
@@ -132,6 +133,9 @@ typedef struct sp
 	float angleSpPlayer;
 	float angle;
 	float distance;
+	int offX;
+	int offY;
+
 }				t_sprite;
 
 
@@ -201,9 +205,11 @@ void collect_res(char *line, int i);
 void collect_text(char *line, int i);
 void check_map(char *line, int i);
 void initalize(ray_struct *rays, int i);
-void renderSpProj(t_sprite  *sprites);
+void renderSpProj(t_sprite  *sprites, ray_struct *rays);
 void renderMapsp( t_sprite *sprites, int i, int j, int indx);
 void draw_px(int x, int y, t_data data, int color);
 void draw_sprite_in_map(t_sprite *sprite);
-void renderSprite(t_sprite *sprite, int vbNumber, t_sprite *visibSprite);
+void renderSprite(t_sprite *sprite, int vbNumber, t_sprite *visibSprite, ray_struct *rays);
+int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays);
+void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite);
 #endif

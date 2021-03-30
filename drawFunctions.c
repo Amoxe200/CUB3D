@@ -135,7 +135,7 @@ void render()
     castAllRays(rays);
     render_wall(rays);
     draw_map(sprites);
-    renderSpProj(sprites);
+    renderSpProj(sprites, rays);
     render_ray(rays);
     draw_sprite_in_map(sprites);
     draw_player();
