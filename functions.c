@@ -79,7 +79,10 @@ void movement()
     move_player.rotationAngle = angleSanitizer(move_player.rotationAngle);
     moveSteps = move_player.walkDirection * move_player.moveSpeed;
    
-    if (world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE][(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1')
+    if (world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
+    [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1' && 
+    world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
+    [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '2' )
     {
         g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
         g_player.y = nextY + (sin(move_player.rotationAngle) * moveSteps);
@@ -94,13 +97,56 @@ void store_data(char *line, int i)
 }
 void collect_res(char *line, int i)
 {
-    if (line[i] != '\0' && line[i] == 'R')
+    if (line[i] != '\0' && (line[i] == 'R' && line[i + 1] == ' '))
         {
+            rounting(line);
              map_conf.data = ft_split(line + i, ' ');
              map_conf.width = ft_atoi(map_conf.data[1]);
              map_conf.height  = ft_atoi(map_conf.data[2]);  
         }
 	//printf("the line %s\n", line);
+}
+
+void rounting(char *line)
+{ 
+    if (line[0] == 'R' && line[1] == ' ')
+    {
+            get_res(line);
+    }   
+}
+
+void get_res(char *line)
+{
+    char **temp;
+    int res1;
+    int res2;
+
+    temp = ft_split(line, ' ');
+    res1 = ft_atoi(temp[1]);
+    res2 = ft_atoi(temp[2]);
+    // change it later
+    printf(" temp 1 = %d\n", res1);
+    if (count_tab(temp) != 3)
+    {
+        ft_putstr_fd("Error in resolution\n", 1);
+            exit(0);
+    }
+    // check the temp 1 and 2 if they are digits if not error
+
+    // check if the resolutions are bigger than 0 
+    // if the resolution is big , give it a default value of the screen width and height
+}
+
+int count_tab(char **tab)
+{
+    int i; 
+
+    i = 0;
+
+    while (tab[i])
+        i++;
+
+    return i;
 }
 
 void collect_text(char *line, int i)
@@ -130,7 +176,6 @@ char  *fill_textures(char *texture, char *line, int i)
         while (line[i] == ' ')
             i++;
     texture = ft_strdup_(line + i);
-	//printf("texture %s\n", texture);
     return (texture);
 }
 

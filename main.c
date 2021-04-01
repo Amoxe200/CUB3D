@@ -9,8 +9,8 @@ void ft_init()
     move_player.turnDirection = 0;
     move_player.walkDirection = 0;
     move_player.rotationAngle = 180 * (M_PI / 180.0);
-    move_player.moveSpeed     = 20.0;
-    move_player.rotationSpeed = 10 * (M_PI / 180.0);
+    move_player.moveSpeed     = 30.0;
+    move_player.rotationSpeed = 20 * (M_PI / 180.0);
     
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr,
@@ -63,9 +63,9 @@ void fill_line(char **temp_map, int i)
 }
 int keys()
 { 
+    render();
     mlx_hook(img.win_ptr, 2, 1L<<0, onClickListner, &img);
     mlx_hook(img.win_ptr, 3, 0, reset_player, (void *)0);
-    render();
     return 1;
 }
 void parse_file()

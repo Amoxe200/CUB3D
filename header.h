@@ -201,6 +201,7 @@ void render_wall(ray_struct *rays);
 void render_ray(ray_struct *rays);
 
 void    text_init(void);
+int assign_text(int i, ray_struct *rays);
 void collect_res(char *line, int i);
 void collect_text(char *line, int i);
 void check_map(char *line, int i);
@@ -212,4 +213,8 @@ void draw_sprite_in_map(t_sprite *sprite);
 void renderSprite(t_sprite *sprite, int vbNumber, t_sprite *visibSprite, ray_struct *rays);
 int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays);
 void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite);
+
+void rounting(char *line);
+void get_res(char *line);
+int count_tab(char **tab);
 #endif
