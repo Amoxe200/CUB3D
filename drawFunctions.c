@@ -123,15 +123,13 @@ void render_ray(ray_struct *rays)
 
 void render()
 {
-    int a;
+    
 
-    ray_struct rays[g_tmp_width * TILE_SIZE];
+    ray_struct rays[map_conf.width];
     t_sprite sprites[map_conf.spNumber];
 
-
-    mlx_destroy_image(img.mlx_ptr, img.img);
-    img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
-    img.addr    =      (int *)mlx_get_data_addr(img.img, &a, &a, &a);
+    //mlx_destroy_image(img.mlx_ptr, img.img);
+    
     castAllRays(rays);
     render_wall(rays);
     draw_map(sprites);

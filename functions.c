@@ -43,10 +43,7 @@ int onClickListner(int keycode)
         exit(1);
 	        return (0);
     }
-
-    movement();
-    //mlx_destroy_image(img.mlx_ptr, img.img);
-    //draw_map();
+    movement();    
     reset(keycode);
         return 0;
 }
@@ -90,7 +87,8 @@ void movement()
 }
 
 void store_data(char *line, int i)
-{
+{ 
+
     collect_res(line, i);
     collect_text(line, i);
     check_map(line, i);
@@ -99,41 +97,61 @@ void collect_res(char *line, int i)
 {
     if (line[i] != '\0' && (line[i] == 'R' && line[i + 1] == ' '))
         {
-            rounting(line);
-             map_conf.data = ft_split(line + i, ' ');
-             map_conf.width = ft_atoi(map_conf.data[1]);
-             map_conf.height  = ft_atoi(map_conf.data[2]);  
+            rounting(line, i);
+
+            map_conf.data = ft_split(line + i, ' ');
+            map_conf.width = ft_atoi(map_conf.data[1]);
+            map_conf.height  = ft_atoi(map_conf.data[2]);
+            if (map_conf.width > 2560)
+                    map_conf.width = 2560;
+            if (map_conf.height > 1440)
+                    map_conf.height = 1440;
+
+            if (map_conf.width <= 0 || map_conf.height <= 0)
+            {
+                ft_putstr_fd("Error in Resolution\n", 1);
+                exit(0);
+            }
         }
 	//printf("the line %s\n", line);
 }
 
-void rounting(char *line)
+void rounting(char *line, int i)
 { 
-    if (line[0] == 'R' && line[1] == ' ')
-    {
+    if (line[i] == 'R' && line[i + 1] == ' ' && (map_conf.counter++))
             get_res(line);
-    }   
+    
 }
 
 void get_res(char *line)
 {
     char **temp;
-    int res1;
-    int res2;
+    char *str1;
+    char *str2;
+    int i;
 
+    i = 0;
     temp = ft_split(line, ' ');
-    res1 = ft_atoi(temp[1]);
-    res2 = ft_atoi(temp[2]);
-    // change it later
-    printf(" temp 1 = %d\n", res1);
-    if (count_tab(temp) != 3)
+    if (temp == NULL || count_tab(temp) != 3)
     {
         ft_putstr_fd("Error in resolution\n", 1);
+        exit(0);
+    }
+    str1 = temp[1];
+    str2 = temp[2];
+    // change it later
+    while (str1[i] && str2[i])
+    {
+         if (ft_isdigit(str1[i]) == 0 || ft_isdigit(str2[i]) == 0)
+         {
+             ft_putstr_fd("Error in resolution check numbers\n", 1);
             exit(0);
+         }
+        i++;
     }
     // check the temp 1 and 2 if they are digits if not error
 
-    // check if the resolutions are bigger than 0 
+    // check if the resolutions are bigger than 0
     // if the resolution is big , give it a default value of the screen width and height
 }
 
@@ -142,36 +160,32 @@ int count_tab(char **tab)
     int i; 
 
     i = 0;
-
     while (tab[i])
         i++;
-
     return i;
 }
 
 void collect_text(char *line, int i)
 {
-    if (line[i] != '\0' && line[i] == 'N' && line [i + 1] == 'O')
+    if (line[i] != '\0' && line[i] == 'N' && line [i + 1] == 'O' && (map_conf.counter++))
        map_conf.north_texture =  fill_textures(map_conf.north_texture, line, i);
 	//printf("north %s\n", map_conf.north_texture);
-    if (line[i] != '\0' && line[i] == 'S' && line [i + 1] == 'O')
+    if (line[i] != '\0' && line[i] == 'S' && line [i + 1] == 'O' && (map_conf.counter++))
        map_conf.south_texture =  fill_textures(map_conf.south_texture, line, i);
-    if (line[i] != '\0' && line[i] == 'W' && line [i + 1] == 'E')
+    if (line[i] != '\0' && line[i] == 'W' && line [i + 1] == 'E' && (map_conf.counter++))
        map_conf.west_texture =  fill_textures(map_conf.west_texture, line, i);    
-    if (line[i] != '\0' && line[i] == 'E' && line [i + 1] == 'A')
+    if (line[i] != '\0' && line[i] == 'E' && line [i + 1] == 'A' && (map_conf.counter++))
        map_conf.east_texture =  fill_textures(map_conf.east_texture, line, i);
-    if (line[i] != '\0' && line[i] == 'S')
+    if (line[i] != '\0' && line[i] == 'S' && line[i + 1] == ' ' && (map_conf.counter++))
         map_conf.sprite = fill_textures(map_conf.sprite, line, i);
-    if (line[i] != '\0' && line[i] == 'F')
+    if (line[i] != '\0' && line[i] == 'F' && line[i + 1] == ' ' && (map_conf.counter++))
         	fill_floor(line, i);
-    if (line[i] != '\0' && line[i] == 'C')
+    if (line[i] != '\0' && line[i] == 'C' && line[i + 1] == ' ' && (map_conf.counter++))
             fill_ceilling(line, i);
 }
 
 char  *fill_textures(char *texture, char *line, int i)
 {
-	//printf("texture %s\n", texture);
-	//printf("line %s\n", line);
      i += 2;
         while (line[i] == ' ')
             i++;
@@ -187,7 +201,11 @@ void fill_floor(char *line, int i)
     map_conf.data   = ft_split(line + i, ',');
     map_conf.rFloor = ft_atoi(map_conf.data[0]);
     map_conf.gFloor = ft_atoi(map_conf.data[1]);
-    map_conf.bFloor = ft_atoi(map_conf.data[2]);
+    map_conf.bFloor = ft_atoi(map_conf.data[2]), printf("%d\n", map_conf.bFloor);
+    (map_conf.rFloor < 0 || map_conf.rFloor > 255) ? ft_error("Error red in floor") : 0;
+    (map_conf.gFloor < 0 || map_conf.gFloor > 255) ? ft_error("Error green in floor") : 0;
+    (map_conf.bFloor < 0 || map_conf.bFloor > 255) ? ft_error("Error blue in floor") : 0;
+    g_floor = (map_conf.rFloor << 16) | (map_conf.gFloor << 8) | map_conf.bFloor;
 }
 
 void fill_ceilling(char *line, int i)
@@ -199,7 +217,10 @@ void fill_ceilling(char *line, int i)
     map_conf.ceilingR = ft_atoi(map_conf.data[0]);
     map_conf.ceilingG = ft_atoi(map_conf.data[1]);
     map_conf.ceilingB = ft_atoi(map_conf.data[2]);
-    
+    (map_conf.ceilingR < 0 || map_conf.ceilingR > 255) ? ft_error("Error red in ceeling") : 0;
+    (map_conf.ceilingG < 0 || map_conf.ceilingG > 255) ? ft_error("Error green in ceeling") : 0;
+    (map_conf.ceilingB < 0 || map_conf.ceilingB > 255) ? ft_error("Error blue in ceeling") : 0;
+    g_ceeling = (map_conf.ceilingR << 16) | (map_conf.ceilingG << 8) | map_conf.ceilingB;
 }
 
 void creatingMap(char *line, int i)
@@ -259,7 +280,6 @@ void rays_init(ray_struct *rays)
         rays->angle_norm = move_player.rotationAngle - (rays->fv_angle / 2);
         rays->num_rays = map_conf.width;
 		rays->fv_angle = 60 * (M_PI / 180);
-        
 }
 
 void castAllRays(ray_struct *rays)
@@ -419,6 +439,7 @@ void calculDistance(ray_struct *rays, int i)
 
     horzHitDistance = (rays -> foundHorzWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> horzwallHitX, rays -> horzwallHitY) : INT_MAX;
     vertHitDistance = (rays -> foundVertWallHit) ? distanceBpoint(g_player.x, g_player.y, rays -> vertwallHitX, rays -> vertwallHitY) : INT_MAX; 
+    //printf("%f\n", vertHitDistance);
     if (vertHitDistance < horzHitDistance)
     {
         rays[i].distance = vertHitDistance;
@@ -467,7 +488,7 @@ void render_wall(ray_struct *rays)
         
         while (y < wall.wallTpPixel)
         {
-            my_mlx_pixel_put(&img, i, y, 0x2C1111);
+            my_mlx_pixel_put(&img, i, y, g_floor);
             y++;
         }
         y = wall.wallTpPixel;
@@ -482,7 +503,7 @@ void render_wall(ray_struct *rays)
         y = wall.wallBtPixel;
         while ( y < map_conf.height)
         {
-            my_mlx_pixel_put(&img, i, y, 0x110306);
+            my_mlx_pixel_put(&img, i, y, g_ceeling);
             y++;
         }
         i++;
@@ -502,8 +523,8 @@ void check_map(char *line, int i)
 
 void initalize(ray_struct *rays, int i)
 {
-		wall.perpDistance = rays[i].distance * cos(rays[i].angle_norm - move_player.rotationAngle);
-        wall.distProjPlan = (map_conf.height / 2) / tan(rays -> fv_angle / 2);
+		wall.perpDistance = (rays[i].distance * cos(rays[i].angle_norm - move_player.rotationAngle));
+        wall.distProjPlan = (map_conf.width / 2) / tan(rays -> fv_angle / 2);
         wall.projWallHeight = (TILE_SIZE / wall.perpDistance) * wall.distProjPlan;
         wall.wallStrHeight = (int) wall.projWallHeight;
         wall.wallTpPixel = (map_conf.height / 2) - (wall.wallStrHeight / 2);
@@ -516,37 +537,32 @@ void initalize(ray_struct *rays, int i)
              dtx.offX = (int)rays[i].wallHitX % TILE_SIZE;
 }
 
+int     ft_error(char *err)
+{
+    printf("%s\n", err);
+    exit (0);
+}
+
 void    text_init(void )
 {
-    int w;
-    int h;
-        // change printf with print_error
-    if (!(nt.img))
-	    if (!(nt.img= mlx_xpm_file_to_image(img.mlx_ptr, map_conf.north_texture, &w, &h)))
-            printf("ERROR\n");
-    if (!(nt.addr))
-         nt.addr = (int *) mlx_get_data_addr(nt.img, &nt.bits_per_pixel, &nt.line_lenght, &nt.endian);
-    if (!(st.img))
-        if (!(st.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.south_texture, &w, &h)))
-            printf("ERROR\n");
-    if (!(st.addr))
-        st.addr = (int *)mlx_get_data_addr(st.img, &st.bits_per_pixel, &st.line_lenght, &st.endian);
-    if (!(wt.img))
-        if (!(wt.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.west_texture, &w, &h)))
-            printf("ERROR\n");
-    if (!(wt.addr))
-        wt.addr = (int *)mlx_get_data_addr(wt.img, &wt.bits_per_pixel, &wt.line_lenght, &wt.endian);
-    if (!(et.img))
-        if (!(et.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.east_texture, &w, &h)))
-            printf("ERROR\n");
-    if (!(et.addr))
-        et.addr = (int *)mlx_get_data_addr(et.img, &et.bits_per_pixel, &et.line_lenght, &et.endian);
-    if (!(sp.img))
-        if (!(sp.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.sprite, &w, &h)))
-            printf("ERROR\n");
-    if (!(sp.addr))
-        sp.addr = (int *)mlx_get_data_addr(sp.img, &sp.bits_per_pixel, &sp.line_lenght, &sp.endian);
-  
+    int         w;
+    int         h;
+
+    if (!(nt.img= mlx_xpm_file_to_image(img.mlx_ptr, map_conf.north_texture, &w, &h)))
+        ft_error("Error\nNO texture");
+        nt.addr = (int *) mlx_get_data_addr(nt.img, &nt.bits_per_pixel, &nt.line_lenght, &nt.endian);
+    if (!(st.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.south_texture, &w, &h)))
+        ft_error("Error\nSO texture");
+    st.addr = (int *)mlx_get_data_addr(st.img, &st.bits_per_pixel, &st.line_lenght, &st.endian);
+    if (!(wt.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.west_texture, &w, &h)))
+        ft_error("Error\nWE texture");
+    wt.addr = (int *)mlx_get_data_addr(wt.img, &wt.bits_per_pixel, &wt.line_lenght, &wt.endian);
+    if (!(et.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.east_texture, &w, &h)))
+        ft_error("Error\nEA texture");
+    et.addr = (int *)mlx_get_data_addr(et.img, &et.bits_per_pixel, &et.line_lenght, &et.endian);
+    if (!(sp.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.sprite, &w, &h)))
+        ft_error("Error\nS texture");
+    sp.addr = (int *)mlx_get_data_addr(sp.img, &sp.bits_per_pixel, &sp.line_lenght, &sp.endian);
 }
 
 int assign_text(int i, ray_struct *rays)
@@ -654,7 +670,7 @@ void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite, ray_st
     i = 0;
     
     // check with this part later and remove the y test 
-    distProjPlan = (map_conf.width / 2) / tan(FOV / 2);
+    distProjPlan = ((map_conf.width / 2) / tan(FOV / 2));
     while (i < vbNumber)
     {
         sprite = visibSprite[i];
@@ -665,6 +681,7 @@ void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite, ray_st
         spTpY = (spTpY < 0) ? 0 : spTpY;
         spBtY = (map_conf.height / 2) + (spHeight / 2);
         spBtY = (spBtY > map_conf.height) ? map_conf.height : spBtY;
+       
         spriteAngle = atan2(sprite.y - g_player.y, sprite.x - g_player.x) - move_player.rotationAngle;
         spritePosX = tan(spriteAngle) * distProjPlan;
         spriteLeftX = (map_conf.width / 2 ) + spritePosX - (spWidth / 2);
@@ -673,15 +690,15 @@ void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite, ray_st
         while (x < SpriteRightX)
         {
             float texelWidth = (64 / spWidth);
-            sprite.offX = (x - spriteLeftX) * texelWidth; 
+            sprite.offX = (x - spriteLeftX) * texelWidth < 0 ? 0 : (x - spriteLeftX) * texelWidth; 
             y = spTpY;
             while (y < spBtY)
             {
-               
                 if (x > 0 && x < map_conf.width && y > 0 && y < map_conf.height)
                 {
                         int distFtop = y + (spHeight / 2) - (map_conf.height / 2);
                         sprite.offY = distFtop * (64 / spHeight);
+                        //printf("%d\n", sprite.offY);
                         assigne_sprite(sprite, x, y, rays);
                 }
                 y++;

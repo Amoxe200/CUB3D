@@ -2,12 +2,12 @@
 NAME = cub3D
 CC = gcc
 Src = *.c libft/*.c getNextLine/*.c
-Flags = -Wall -Wextra -Werror
+Flags = -Wall -Wextra -Werror -O3
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
 SegfaultSani = -fsanitize=address -g
-m = backupProjectBeforeParsing
+m = backupProjectBeforeParsing1
 
 
 all: $(NAME)

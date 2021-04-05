@@ -38,103 +38,104 @@ typedef struct  s_data
 
 typedef struct s_player
 {
-	float x;
-	float y;
-	int last_x;
-	int last_y;
+	float	x;
+	float	y;
+	int		last_x;
+	int		last_y;
 
 }               m_player;
 
 typedef struct mv_player
 {
-	int x;
-	int y;
-	int radius;
-	int turnDirection;
-	int walkDirection;
-	float rotationAngle;
-	float moveSpeed;
-	float rotationSpeed;  
+	int		x;
+	int		y;
+	int		radius;
+	int		turnDirection;
+	int		walkDirection;
+	float	rotationAngle;
+	float	moveSpeed;
+	float	rotationSpeed;
 }               cls_player;
 
 typedef struct map_config
 {
-	char **data;
-	int height;
-	char *wlrd;
-	int width;
-	int rFloor;
-	int gFloor;
-	int bFloor;
-	char *north_texture;
-	char *west_texture;
-	char *east_texture;
-	char *south_texture;
-	char *sprite_texture;
-	char *sprite;
-	int ceilingR;
-	int ceilingG;
-	int ceilingB;
-	int numHeight;
-	int numWidth;
-	int spNumber;
+	int		width;
+	int		rFloor;
+	int		gFloor;
+	int		bFloor;
+	int		height;
+	int		ceilingR;
+	int		ceilingG;
+	int		ceilingB;
+	int		numHeight;
+	int		numWidth;
+	int		spNumber;
+	int		counter;
+	char	**data;
+	char	*wlrd;
+	char	*north_texture;
+	char	*west_texture;
+	char	*east_texture;
+	char	*south_texture;
+	char	*sprite_texture;
+	char	*sprite;
 }               config_map;
 
 typedef struct rays
 {
-	int wall_strWidth;
-	float horzwallHitX;
-	float horzwallHitY;
-	float vertwallHitX;
-	float vertwallHitY;
-	int isRayFacingDown;
-	int isRayFacingUp;
-	int isRayFacingRight;
-	int isRayFacingLeft;
-	int foundHorzWallHit;
-	int foundVertWallHit;
-	int wasHitVertical;
-	int horzWallContent;
-	int vertWallContent;
-	int wallHitContent;
-	float wallHitX;
-	float wallHitY;
-	float fv_angle;
-	float distance;
-	float num_rays;
-	float angle_norm;
+	float	horzwallHitX;
+	float	horzwallHitY;
+	float	vertwallHitX;
+	float	vertwallHitY;
+	float	wallHitX;
+	float	wallHitY;
+	float	fv_angle;
+	float	distance;
+	float	num_rays;
+	float	angle_norm;
+	int		wall_strWidth;
+	int		isRayFacingDown;
+	int		isRayFacingUp;
+	int		isRayFacingRight;
+	int		isRayFacingLeft;
+	int		foundHorzWallHit;
+	int		foundVertWallHit;
+	int		wasHitVertical;
+	int		horzWallContent;
+	int		vertWallContent;
+	int		wallHitContent;
 }               ray_struct;
 
 typedef struct walls
 {
-	float distProjPlan;
-	float projWallHeight;
-	int   wallStrHeight;
-	float wallTpPixel;
-	float wallBtPixel;
-	float perpDistance;
+	float	distProjPlan;
+	float	projWallHeight;
+	int		wallStrHeight;
+	float	wallTpPixel;
+	float	wallBtPixel;
+	float	perpDistance;
 
 }				wall_struct;
 
 
 typedef	struct txt
 {	
-	int offX;
-	int offY;
-	int dist;
+	int		offX;
+	int		offY;
+	int		dist;
 }			txt_data;
 
 typedef struct sp
 {
-	int visibSp;
-	float x;
-	float y;
-	float dst;
-	float angleSpPlayer;
-	float angle;
-	float distance;
-	int offX;
-	int offY;
+	float	x;
+	float	y;
+	float	dst;
+	float	angleSpPlayer;
+	float	angle;
+	float	distance;
+	int		visibSp;
+	int		offX;
+	int		offY;
 
 }				t_sprite;
 
@@ -214,7 +215,94 @@ void renderSprite(t_sprite *sprite, int vbNumber, t_sprite *visibSprite, ray_str
 int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays);
 void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite);
 
-void rounting(char *line);
+void rounting(char *line, int i);
 void get_res(char *line);
 int count_tab(char **tab);
+int ft_error(char *err);
+int keys();
+
+//intialize variables
+/*
+img = 0;
+addr = 0;
+mlx_ptr = 0;
+win_ptr = 0;
+bits_per_pixel = 0;
+line_lenght = 0;
+endian = 0;
+x = 0;
+y = 0;
+last_x = 0;
+last_y = 0;
+x = 0;
+y = 0;
+radius = 0;
+turnDirection = 0;
+walkDirection = 0;
+rotationAngle = 0;
+moveSpeed = 0;
+rotationSpeed = 0;
+width = 0;
+rFloor = 0;
+gFloor = 0;
+bFloor = 0;
+height = 0;
+ceilingR = 0;
+ceilingG = 0;
+ceilingB = 0;
+numHeight = 0;
+numWidth = 0;
+spNumber = 0;
+counter = 0;
+data = 0;
+wlrd = 0;
+north_texture = 0;
+west_texture = 0;
+east_texture = 0;
+south_texture = 0;
+sprite_texture = 0;
+sprite = 0;
+horzwallHitX = 0;
+horzwallHitY = 0;
+vertwallHitX = 0;
+vertwallHitY = 0;
+wallHitX = 0;
+wallHitY = 0;
+fv_angle = 0;
+distance = 0;
+num_rays = 0;
+angle_norm = 0;
+wall_strWidth = 0;
+isRayFacingDown = 0;
+isRayFacingUp = 0;
+isRayFacingRight = 0;
+isRayFacingLeft = 0;
+foundHorzWallHit = 0;
+foundVertWallHit = 0;
+wasHitVertical = 0;
+horzWallContent = 0;
+vertWallContent = 0;
+wallHitContent = 0;
+distProjPlan = 0;
+projWallHeight = 0;
+wallStrHeight = 0;
+wallTpPixel = 0;
+wallBtPixel = 0;
+perpDistance = 0;
+offX = 0;
+offY = 0;
+dist = 0;
+x = 0;
+y = 0;
+dst = 0;
+angleSpPlayer = 0;
+angle = 0;
+distance = 0;
+visibSp = 0;
+offX = 0;
+offY = 0;
+*/
+
+int g_floor;
+int g_ceeling;
 #endif

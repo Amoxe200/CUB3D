@@ -9,7 +9,7 @@ void ft_init()
     move_player.turnDirection = 0;
     move_player.walkDirection = 0;
     move_player.rotationAngle = 180 * (M_PI / 180.0);
-    move_player.moveSpeed     = 30.0;
+    move_player.moveSpeed     = 50.0;
     move_player.rotationSpeed = 20 * (M_PI / 180.0);
     
     img.mlx_ptr =       mlx_init();
@@ -75,6 +75,7 @@ void parse_file()
     fd = open ("file.cub", O_RDONLY);
     i = 0;
     char *line;
+    map_conf.counter = 0;
     while (get_next_line(fd, &line) != 0)
     {
         
@@ -90,13 +91,19 @@ void parse_file()
             i++; 
         store_data(line, i);
     }
+     if (map_conf.counter != 8)
+    {
+        ft_putstr_fd("Error In Configuration", 1);
+        exit(0);
+    }
 
 }
 
 int main()
 {
+    int a;
     //remove it later
-    setbuf(stdout, NULL);
+    //setbuf(stdout, NULL);
     
     // map_conf.numHeight = 0;
     // map_conf.numWidth = 0;
@@ -105,6 +112,8 @@ int main()
     parse_file();
     fill_map();
     ft_init();
+    img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
+    img.addr    =      (int *)mlx_get_data_addr(img.img, &a, &a, &a);
     mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
     mlx_loop(img.mlx_ptr);
  
