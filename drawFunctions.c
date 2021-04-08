@@ -70,34 +70,59 @@ void draw_map(t_sprite *sprites)
 {
     int i;
     int j;
-    int color;
-    int indx;
 
     j = 0;
-    indx = 0;
+    map_conf.indx = 0;
+    map_conf.player = 0;
      while (j < map_conf.numHeight)
      {
          i = 0;
          while (i < g_tmp_width)
          {
-             if (world[j][i] == '1')
+             lookError(i, j);
+             drawTheMap(i,j,sprites);
+            i++;
+         }
+        j++;
+     }
+     map_conf.player > 1 ? ft_error("Multiple Players in Maps") : 0;
+     map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
+} 
+void lookError(int i, int j)
+{
+            if (ft_strchr("NSWE", world[j][i]))
+                    map_conf.player++;
+             if (j == 0 || j == map_conf.numHeight )
+             {
+                if (world[j][i] != '1' && world[j][i] != ' ')
+                    ft_error("Error In map");
+             }
+             else if (world[j][i] == '0' || world[j][i] == '2' || world[j][i] == 'S' || world[j][i] == 'N' || world[j][i] == 'W' || world[j][i] == 'E')
+			 {
+				if (world[j - 1][i] == ' ' || world[j + 1][i] == ' ' || world[j][i + 1] == ' ')
+                     ft_error("Error In map");
+			 }
+             else if (world[j][i] != '1' && world[j][i] != ' ')
+                ft_error("Error\nWrong character in map");
+}
+void drawTheMap(int i, int j, t_sprite *sprites)
+{
+    int color;
+
+    if (world[j][i] == '1')
 			 {
 				color = 0x0E3B43;
 				draw_square(i, j, img, color);
 			 }
              else if (world[j][i] == '2')
-                store_the_spData(i, j, sprites, indx++);
+                store_the_spData(i, j, sprites, map_conf.indx++);
+           
             else
             {
                 color = 0x605F5E;
 				draw_square(i , j, img, color);
             }
-            i++;
-         }
-        j++;
-     }
 }
-
 
 void draw_player()
 {
@@ -131,7 +156,7 @@ void render()
     //mlx_destroy_image(img.mlx_ptr, img.img);
     
     castAllRays(rays);
-    render_wall(rays);
+    
     draw_map(sprites);
     renderSpProj(sprites, rays);
     render_ray(rays);

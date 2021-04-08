@@ -79,6 +79,8 @@ typedef struct map_config
 	char	*south_texture;
 	char	*sprite_texture;
 	char	*sprite;
+	int		indx;
+	int		player;
 }               config_map;
 
 typedef struct rays
@@ -198,7 +200,7 @@ void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays);
 double distanceBpoint(float x1, float y1, float x2, float y2);
 void calculDistance(ray_struct *rays, int i);
 void store_array(ray_struct *rays, int i);
-void render_wall(ray_struct *rays);
+void render_wall(ray_struct *rays, int i);
 void render_ray(ray_struct *rays);
 
 void    text_init(void);
@@ -220,7 +222,9 @@ void get_res(char *line);
 int count_tab(char **tab);
 int ft_error(char *err);
 int keys();
-
+void drawTheMap(int i, int j, t_sprite *sprites);
+void lookError(int i, int j);
+void checkNum(char *str, char *str2, char *str3);
 //intialize variables
 /*
 img = 0;
