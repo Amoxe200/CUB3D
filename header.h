@@ -72,6 +72,7 @@ typedef struct map_config
 	int		spNumber;
 	int		counter;
 	char	**data;
+	char 	**map;
 	char	*wlrd;
 	char	*north_texture;
 	char	*west_texture;
@@ -81,6 +82,8 @@ typedef struct map_config
 	char	*sprite;
 	int		indx;
 	int		player;
+	char	**world;
+	int		startMP;
 }               config_map;
 
 typedef struct rays
@@ -156,7 +159,6 @@ txt_data    	dtx;
 
 
 int g_tmp_width;
-char **world;
 
 void collect_spData(t_sprite *sprite, int indx);
 void store_the_spData(int i, int j, t_sprite *sprites, int indx);
@@ -223,8 +225,10 @@ int count_tab(char **tab);
 int ft_error(char *err);
 int keys();
 void drawTheMap(int i, int j, t_sprite *sprites);
-void lookError(int i, int j);
+void lookError();
 void checkNum(char *str, char *str2, char *str3);
+void fil_space(char **map);
+void fil_themp(char **map, char **wrld);
 //intialize variables
 /*
 img = 0;

@@ -74,49 +74,62 @@ void draw_map(t_sprite *sprites)
     j = 0;
     map_conf.indx = 0;
     map_conf.player = 0;
-     while (j < map_conf.numHeight)
+     while (map_conf.map[j])
      {
          i = 0;
-         while (i < g_tmp_width)
+         while (map_conf.map[j][i])
          {
-             lookError(i, j);
              drawTheMap(i,j,sprites);
             i++;
          }
         j++;
      }
-     map_conf.player > 1 ? ft_error("Multiple Players in Maps") : 0;
-     map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
+     //map_conf.player > 1 ? ft_error("Multiple Players in Maps") : 0;
+     //map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
 } 
-void lookError(int i, int j)
+void lookError()
 {
-            if (ft_strchr("NSWE", world[j][i]))
-                    map_conf.player++;
+    int i;
+    int j; 
+
+    j = 0;
+    while (map_conf.map[j])
+    {
+        i = 0;
+
+        while(map_conf.map[j][i])
+        {
+            if (ft_strchr("NSWE", map_conf.map[j][i]))
+                map_conf.player++;       
              if (j == 0 || j == map_conf.numHeight )
              {
-                if (world[j][i] != '1' && world[j][i] != ' ')
+                if (map_conf.map[j][i] != '1' && map_conf.map[j][i] != ' ')
                     ft_error("Error In map");
              }
-             else if (world[j][i] == '0' || world[j][i] == '2' || world[j][i] == 'S' || world[j][i] == 'N' || world[j][i] == 'W' || world[j][i] == 'E')
+             else if (map_conf.map[j][i] == '0' || map_conf.map[j][i] == '2' || map_conf.map[j][i] == 'S' || map_conf.map[j][i] == 'N' || map_conf.map[j][i] == 'W' || map_conf.map[j][i] == 'E')
 			 {
-				if (world[j - 1][i] == ' ' || world[j + 1][i] == ' ' || world[j][i + 1] == ' ')
+				if (map_conf.map[j - 1][i] == ' ' || map_conf.map[j + 1][i] == ' ' || map_conf.map[j][i + 1] == ' ')
                      ft_error("Error In map");
 			 }
-             else if (world[j][i] != '1' && world[j][i] != ' ')
+             else if (map_conf.map[j][i] != '1' && map_conf.map[j][i] != ' ')
                 ft_error("Error\nWrong character in map");
+            i++;
+        } 
+        j++;
+    }
+            
 }
 void drawTheMap(int i, int j, t_sprite *sprites)
 {
     int color;
 
-    if (world[j][i] == '1')
+    if (map_conf.map[j][i] == '1')
 			 {
 				color = 0x0E3B43;
 				draw_square(i, j, img, color);
 			 }
-             else if (world[j][i] == '2')
+             else if (map_conf.map[j][i] == '2')
                 store_the_spData(i, j, sprites, map_conf.indx++);
-           
             else
             {
                 color = 0x605F5E;
@@ -153,10 +166,7 @@ void render()
     ray_struct rays[map_conf.width];
     t_sprite sprites[map_conf.spNumber];
 
-    //mlx_destroy_image(img.mlx_ptr, img.img);
-    
     castAllRays(rays);
-    
     draw_map(sprites);
     renderSpProj(sprites, rays);
     render_ray(rays);

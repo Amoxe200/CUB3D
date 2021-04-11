@@ -74,9 +74,9 @@ void movement()
     move_player.rotationAngle = angleSanitizer(move_player.rotationAngle);
     moveSteps = move_player.walkDirection * move_player.moveSpeed;
 
-    if (world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
+    if (map_conf.map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
              [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1' &&
-        world[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
+        map_conf.map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
              [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '2')
     {
         g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
@@ -266,12 +266,12 @@ void creatingMap(char *line, int i)
 
 //     j = 0;
 //     i = 0;
-//     while (world[i])
+//     while (map_conf.map[i])
 //     {
 //         j = 0;
-//         while (world[i][j])
+//         while (map_conf.map[i][j])
 //         {
-//             if (ft_strchr("NSEW", world[i][j]))
+//             if (ft_strchr("NSEW", map_conf.map[i][j]))
 //             {
 //                 init_pl(i, j);
 //                 break;
@@ -308,12 +308,18 @@ void rays_init(ray_struct *rays)
 void castAllRays(ray_struct *rays)
 {
     int i;
+
+    int k;
+    int h;
+
     float rayAngle;
 
     rays_init(rays);
 
     i = 0;
+    k = 0;
     text_init();
+    
     while (i < rays->num_rays)
     {
         cast(rays, i);
@@ -367,28 +373,28 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
     float nextHorzTouchX;
     float nextHorzTouchY;
 
-    nextHorzTouchX = xyInter[0];
-    nextHorzTouchY = xyInter[1];
-    rays->foundHorzWallHit = 0;
-    rays->horzwallHitX = 0;
-    rays->horzwallHitY = 0;
+	nextHorzTouchX = xyInter[0];
+	nextHorzTouchY = xyInter[1];
+	rays->foundHorzWallHit = 0;
+	rays->horzwallHitX = 0;
+	rays->horzwallHitY = 0;
 
-    while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
-           nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
+	while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
+	nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
     {
-        float xToCheck;
-        float yToCheck;
+		float xToCheck;
+		float yToCheck;
 
-        xToCheck = nextHorzTouchX;
-        yToCheck = nextHorzTouchY + (rays->isRayFacingUp ? -1 : 0);
-        if (world[(int)yToCheck / TILE_SIZE][(int)xToCheck / TILE_SIZE] == '1')
-        {
-            rays->foundHorzWallHit = 1;
-            rays->horzWallContent = world[(int)yToCheck / TILE_SIZE][(int)xToCheck / TILE_SIZE];
-            rays->horzwallHitX = nextHorzTouchX;
-            rays->horzwallHitY = nextHorzTouchY;
-            break;
-        }
+		xToCheck = nextHorzTouchX;
+		yToCheck = nextHorzTouchY + (rays->isRayFacingUp ? -1 : 0);
+		if (map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)] == '1')
+		{
+			rays->foundHorzWallHit = 1;
+			rays->horzWallContent = map_conf.map[(int)yToCheck / TILE_SIZE][(int)xToCheck / TILE_SIZE];
+			rays->horzwallHitX = nextHorzTouchX;
+			rays->horzwallHitY = nextHorzTouchY;
+			break;
+		}
         else
         {
             nextHorzTouchX += xStep;
@@ -437,10 +443,10 @@ void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays)
 
         xtoCheck = nextVertTouchX + (rays->isRayFacingLeft ? -1 : 0);
         ytoCheck = nextVertTouchY;
-        if (world[(int)ytoCheck / TILE_SIZE][(int)xtoCheck / TILE_SIZE] == '1')
+        if (map_conf.map[(int)ytoCheck / TILE_SIZE][(int)xtoCheck / TILE_SIZE] == '1')
         {
             rays->foundVertWallHit = 1;
-            rays->vertWallContent = world[(int)ytoCheck / TILE_SIZE][(int)xtoCheck / TILE_SIZE];
+            rays->vertWallContent = map_conf.map[(int)ytoCheck / TILE_SIZE][(int)xtoCheck / TILE_SIZE];
             rays->vertwallHitX = nextVertTouchX;
             rays->vertwallHitY = nextVertTouchY;
             break;
@@ -525,8 +531,9 @@ void render_wall(ray_struct *rays, int i)
 
 void check_map(char *line, int i)
 {
-    if (line[i] != '\0' && line[i] == '1')
+    if (line[i] == '1' && line[i] != '\0') // add line[i] != '/0'
     {
+        map_conf.startMP = 1;
         while (line[i] == ' ')
             i++;
         creatingMap(line, i);
