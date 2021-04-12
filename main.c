@@ -11,6 +11,8 @@ void ft_init()
     move_player.rotationAngle = 180 * (M_PI / 180.0);
     move_player.moveSpeed     = 20.0;
     move_player.rotationSpeed = 20 * (M_PI / 180.0);
+    map_conf.startMP = 0;
+    map_conf.indx = 0;
     img.mlx_ptr =       mlx_init();
     img.win_ptr =       mlx_new_window(img.mlx_ptr,
     map_conf.width, map_conf.height, "AMOXE");
@@ -21,41 +23,88 @@ void ft_init()
 
 void    fill_map()
 {
-    char **tmp_map;
+    
+    int i;
+    int j;
+    int k;
+    int h;
+    char *z;
+    
+    k = 0;
+    i = 0;
+   z = map_conf.wlrd;
+    map_conf.world = ft_split(map_conf.wlrd, '\n');
+    map_conf.map = malloc((map_conf.numHeight+3) * sizeof(char *));
+    while (i < map_conf.numHeight + 2)
+    {
+        map_conf.map[i] = malloc((g_tmp_width + 3) * sizeof(char));
+        
+        map_conf.map[i][g_tmp_width+2] = '\0';
+        i++;
+
+    }
+    map_conf.map[i] = NULL;
+
+    fil_space(map_conf.map);
+    fil_themp(map_conf.map, map_conf.world);
+    lookError();
+    map_conf.player > 1 ? ft_error("Multiple Players in Maps") : 0;
+     map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
+
+}
+
+
+void fil_space(char **map)
+{
     int i;
     int j;
 
-    tmp_map = ft_split(map_conf.wlrd, '\n');
-    world = malloc(map_conf.numHeight + 2 * sizeof(char *));
-    while (i < map_conf.numHeight)
+    i = 0;
+    while (i < map_conf.numHeight+2)
     {
-        world[i] = malloc(g_tmp_width + 2 * sizeof(char));
-        fill_line(tmp_map, i);
+        j = 0;
+        
+        while (map[i][j])
+        {
+            
+            map[i][j] = ' ';
+            j++;
+        }
         i++;
     }
+
 }
 
-void fill_line(char **temp_map, int i)
+void fil_themp(char **map, char **wrld)
 {
-    int j;
-    int player;
-
-    j = 0;
-    while (temp_map[i][j])
-    {   
-        world[i][j] = temp_map[i][j];
-        if (ft_strchr("NSEW", world[i][j]))
-                init_pl(i, j);
-        else if (ft_strchr("2", world[i][j]))
-            map_conf.spNumber++;
-        j++;
-    }
-    while (j < g_tmp_width)
+    int i;
+    int j; 
+    int y;
+    int h;
+    
+    i = 0;
+    y = 0;
+    while (wrld[i])
     {
-        world[i][j] = ' ';
-        j++;
+        j = 0;
+        h = 0;
+
+        while (wrld[i][j])
+        {
+            map[y][h] = map_conf.world[i][j];
+            if (ft_strchr("NSEW", map_conf.map[i][j]))
+                init_pl(i, j);
+            else if (ft_strchr("2", map_conf.map[i][j]))
+                map_conf.spNumber++;
+            j++;
+            h++;
+        }
+        i++;
+        y++;
     }
+
 }
+
 int keys()
 { 
     render();
@@ -71,28 +120,32 @@ void parse_file()
     i = 0;
     char *line;
     map_conf.counter = 0;
+    
     while (get_next_line(fd, &line) != 0)
     {
-        
         i = 0;
-        while (line[i] == ' ')
-            i++;
+        if (map_conf.counter == 8 && map_conf.startMP == 1 && line[0] == '\0')
+            ft_error("Error");// check later
+        // while (line[i] == ' ' && map_conf.counter != 8)
+        //   i++;
         store_data(line, i);
     }
     if (line != NULL && line[0] != '\0')
     {
         i = 0;
-        while (line[i] == ' ')
-            i++; 
+        
+        // while (line[i] == ' ' && map_conf.counter != 8)
+        //    i++; 
         store_data(line, i);
     }
+    else
+        ft_error("Error\n map should be the last in the file");
 
      if (map_conf.counter != 8)
     {
         ft_putstr_fd("Error In Configuration", 1);
         exit(0);
     }
-
 }
 
 int main()
@@ -109,24 +162,6 @@ int main()
     parse_file();
     fill_map();
     ft_init();
-    int k;
-    int y;
-
-    k = 0;
-
-    while(world[k][y])
-    {   
-        y = 0;
-        while (world[k][y])
-        {
-            if (world[k][y] == ' ')
-                printf("*");
-            else
-                printf("%c", world[k][y]);
-            y++;
-        }
-        k++;
-    }
     img.img     =       mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
     img.addr    =      (int *)mlx_get_data_addr(img.img, &a, &a, &a);
     mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
