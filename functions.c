@@ -381,6 +381,9 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
 	rays->horzwallHitX = 0;
 	rays->horzwallHitY = 0;
 
+    int i = 0;
+    int j;
+
 	while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
 	nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
     {

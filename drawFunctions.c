@@ -93,13 +93,13 @@ void lookError()
     int j; 
 
     j = 0;
-    printf("-----\n");
+
     while (map_conf.map[j])
     {
         i = 0;
 
         while(map_conf.map[j][i])
-        {printf("%c",map_conf.map[j][i]);
+        {
             if (ft_strchr("NSWE", map_conf.map[j][i]))
                 map_conf.player++;       
              if (j == 0 || j == map_conf.numHeight )
@@ -120,7 +120,7 @@ void lookError()
                 ft_error("Error\nWrong character in map");
             i++;
         } 
-        printf("\n");
+
         j++;
     }
             

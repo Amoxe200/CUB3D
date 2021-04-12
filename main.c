@@ -34,7 +34,7 @@ void    fill_map()
     i = 0;
    z = map_conf.wlrd;
     map_conf.world = ft_split(map_conf.wlrd, '\n');
-    printf("%s", map_conf.wlrd);
+
 
     //   while (map_conf.world[k])
     //  {
@@ -75,12 +75,11 @@ void    fill_map()
     fil_space(map_conf.map);
     fil_themp(map_conf.map, map_conf.world);
     lookError();
-
     map_conf.player > 1 ? ft_error("Multiple Players in Maps") : 0;
      map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
 
-    
 }
+
 
 void fil_space(char **map)
 {
@@ -95,7 +94,7 @@ void fil_space(char **map)
         while (map[i][j])
         {
             
-            map[i][j] = ' ';
+            map[i][j] = '1';
             j++;
         }
         i++;
@@ -132,23 +131,23 @@ void fil_themp(char **map, char **wrld)
     }
 
 }
-void fill_line(char **temp_map, int i)
-{
-    int j;
-    int player;
+// void fill_line(char **temp_map, int i)
+// {
+//     int j;
+//     int player;
 
-    j = 0;
-    while (temp_map[i][j])
-    {   
-       map_conf.world[i][j] = temp_map[i][j];
-        j++;
-    }
-    while (j < g_tmp_width)
-    {
-       map_conf.world[i][j] = ' ';
-        j++;
-    }
-}
+//     j = 0;
+//     while (temp_map[i][j])
+//     {   
+//        map_conf.world[i][j] = temp_map[i][j];
+//         j++;
+//     }
+//     while (j < g_tmp_width)
+//     {
+//        map_conf.world[i][j] = ' ';
+//         j++;
+//     }
+// }
 int keys()
 { 
     render();
@@ -169,20 +168,17 @@ void parse_file()
     {
         i = 0;
         if (map_conf.counter == 8 && map_conf.startMP == 1 && line[0] == '\0')
-        {
-            printf("map row %d\n",i);
             ft_error("Error");// check later
-        }
-        //while (line[i] == ' ' && map_conf.counter != 8)
-         //  i++;
+        // while (line[i] == ' ' && map_conf.counter != 8)
+        //   i++;
         store_data(line, i);
     }
     if (line != NULL && line[0] != '\0')
     {
         i = 0;
         
-        //while (line[i] == ' ' && map_conf.counter != 8)
-         //   i++; 
+        // while (line[i] == ' ' && map_conf.counter != 8)
+        //    i++; 
         store_data(line, i);
     }
     else
