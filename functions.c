@@ -179,6 +179,8 @@ void collect_text(char *line, int i)
         fill_floor(line, i);
     else if (line[i] != '\0' && line[i] == 'C' && line[i + 1] == ' ' && (map_conf.counter++))
         fill_ceilling(line, i);
+    else if (line[i] == '1' && map_conf.counter < 8)
+        ft_error("Error\n Check your file");
 }
 
 char *fill_textures(char *texture, char *line, int i)
@@ -531,11 +533,11 @@ void render_wall(ray_struct *rays, int i)
 
 void check_map(char *line, int i)
 {
-    if (line[i] == '1' && line[i] != '\0') // add line[i] != '/0'
+    if ((line[i] == '1' || line[i] == ' ') && line[i] != '\0') // add line[i] != '/0' && 
     {
         map_conf.startMP = 1;
-        while (line[i] == ' ')
-            i++;
+        // while (line[i] == ' ')
+        //     i++;
         creatingMap(line, i);
     }
 }
