@@ -126,26 +126,17 @@ void parse_file()
         i = 0;
         if (map_conf.counter == 8 && map_conf.startMP == 1 && line[0] == '\0')
             ft_error("Error");// check later
-        // while (line[i] == ' ' && map_conf.counter != 8)
-        //   i++;
         store_data(line, i);
     }
     if (line != NULL && line[0] != '\0')
     {
         i = 0;
-        
-        // while (line[i] == ' ' && map_conf.counter != 8)
-        //    i++; 
         store_data(line, i);
     }
     else
         ft_error("Error\n map should be the last in the file");
-
-     if (map_conf.counter != 8)
-    {
-        ft_putstr_fd("Error In Configuration", 1);
-        exit(0);
-    }
+    if (map_conf.result != 2480)
+            ft_error("Error\n Duplicate or missing params");
 }
 
 int main()

@@ -6,14 +6,13 @@ Flags = -Wall -Wextra -Werror -O3
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
-SegfaultSani = -fsanitize=address -g
-m =testing2
+m =parsingSeemsToWorkFine
 
 
 all: $(NAME)
 
 $(NAME):
-	@$(CC) $(Src) $(Search) $(FindLib) $(FrameWroks) $(SegfaultSani)
+	@$(CC) $(Src) $(Search) $(FindLib) $(FrameWroks)
 fclean:
 	@rm -rf $(NAME)
 re: fclean all

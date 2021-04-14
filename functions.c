@@ -91,7 +91,12 @@ void store_data(char *line, int i)
     collect_res(line, i);
     collect_text(line, i);
     check_map(line, i);
+
+    map_conf.result = map_conf.res + map_conf.no + 
+    map_conf.so + map_conf.we + map_conf.ea +
+    map_conf.s + map_conf.f + map_conf.c;
 }
+
 void collect_res(char *line, int i)
 {
     if (line[i] != '\0' && (line[i] == 'R' && line[i + 1] == ' '))
@@ -99,25 +104,31 @@ void collect_res(char *line, int i)
         rounting(line, i);
 
         map_conf.data = ft_split(line + i, ' ');
+        printf("DATA 0 = %s|DATA 1 = %s\n", map_conf.data[1], map_conf.data[2]);
         map_conf.width = ft_atoi(map_conf.data[1]);
         map_conf.height = ft_atoi(map_conf.data[2]);
+        printf("DATA INT 0 = %d|DATA INT 1 = %d\n", map_conf.width, map_conf.height);
         if (map_conf.width > 2560)
             map_conf.width = 2560;
         if (map_conf.height > 1440)
             map_conf.height = 1440;
         if (map_conf.width <= 0 || map_conf.height <= 0)
         {
+            printf("%d|%d\n", map_conf.width, map_conf.height);
             ft_putstr_fd("Error in Resolution\n", 1);
             exit(0);
         }
     }
-    //printf("the line %s\n", line);
 }
 
 void rounting(char *line, int i)
 {
-    if (line[i] == 'R' && line[i + 1] == ' ' && (map_conf.counter++))
+    
+    if (line[i] == 'R' && line[i + 1] == ' '  && (++map_conf.counter))
+    {
+        map_conf.res += 100;
         get_res(line);
+    }
 }
 
 void get_res(char *line)
@@ -126,6 +137,7 @@ void get_res(char *line)
     char *str1;
     char *str2;
     int i;
+    int j;
 
     i = 0;
     temp = ft_split(line, ' ');
@@ -137,19 +149,28 @@ void get_res(char *line)
     str1 = temp[1];
     str2 = temp[2];
     // change it later
-    while (str1[i] && str2[i])
-    {
-        if (ft_isdigit(str1[i]) == 0 || ft_isdigit(str2[i]) == 0)
-        {
-            ft_putstr_fd("Error in resolution check numbers\n", 1);
-            exit(0);
-        }
+    printf("the height = %s\n", str1);
+    printf("the Width  = %s\n", str2);
+    j = i;
+    while (str1[i] && ft_isdigit(str1[i]) == 1)
         i++;
-    }
-    // check the temp 1 and 2 if they are digits if not error
-
-    // check if the resolutions are bigger than 0
-    // if the resolution is big , give it a default value of the screen width and height
+    if (str1[i])
+        ft_error("Error\n Check Resolution");
+    while (str2[j] && ft_isdigit(str2[j]) == 1)
+        j++;
+    if (str2[j])
+        ft_error("Error\n Check Resolution");
+    // while (str1[i] || str2[i])
+    // {
+    //     printf("the is digit height = %d|%c\n", ft_isdigit(str1[i]), str1[i]);
+    //     printf("the is digit width = %d|%c\n", ft_isdigit(str2[i]), str2[i]);
+    //     if (ft_isdigit(str1[i]) == 0 || ft_isdigit(str2[i]) == 0)
+    //             ft_error("Error\n Check Resolution");
+        
+    //     // if (str1[i + 1] != ' ' || str2[i + 1] != ' ')
+    //     //     ft_error("Error\n Check Resolution");
+    //     i++;
+    // }
 }
 
 int count_tab(char **tab)
@@ -164,23 +185,45 @@ int count_tab(char **tab)
 
 void collect_text(char *line, int i)
 {
-    if (line[i] != '\0' && line[i] == 'N' && line[i + 1] == 'O' && (map_conf.counter++))
+    if (line[i] != '\0' && line[i] == 'N' && line[i + 1] == 'O' && (++map_conf.counter))
+    {
         map_conf.north_texture = fill_textures(map_conf.north_texture, line, i);
-    //printf("north %s\n", map_conf.north_texture);
-    else if (line[i] != '\0' && line[i] == 'S' && line[i + 1] == 'O' && (map_conf.counter++))
+        map_conf.no += 200;
+    }
+    else if (line[i] != '\0' && line[i] == 'S' && line[i + 1] == 'O' && (++map_conf.counter))
+    {
         map_conf.south_texture = fill_textures(map_conf.south_texture, line, i);
-    else if (line[i] != '\0' && line[i] == 'W' && line[i + 1] == 'E' && (map_conf.counter++))
+        map_conf.so += 500;
+    }
+    else if (line[i] != '\0' && line[i] == 'W' && line[i + 1] == 'E' && (++map_conf.counter))
+    {
         map_conf.west_texture = fill_textures(map_conf.west_texture, line, i);
-    else if (line[i] != '\0' && line[i] == 'E' && line[i + 1] == 'A' && (map_conf.counter++))
+        map_conf.we += 40;
+    }
+    else if (line[i] != '\0' && line[i] == 'E' && line[i + 1] == 'A' && (++map_conf.counter))
+    {
         map_conf.east_texture = fill_textures(map_conf.east_texture, line, i);
-    else if (line[i] != '\0' && line[i] == 'S' && line[i + 1] == ' ' && (map_conf.counter++))
+        map_conf.ea += 600;
+    }
+    else if (line[i] != '\0' && line[i] == 'S' && line[i + 1] == ' ' && (++map_conf.counter))
+    {
         map_conf.sprite = fill_textures(map_conf.sprite, line, i);
-    else if (line[i] != '\0' && line[i] == 'F' && line[i + 1] == ' ' && (map_conf.counter++))
+        map_conf.s += 20;
+    }
+    else if (line[i] != '\0' && line[i] == 'F' && line[i + 1] == ' ' && (++map_conf.counter))
+    {
         fill_floor(line, i);
-    else if (line[i] != '\0' && line[i] == 'C' && line[i + 1] == ' ' && (map_conf.counter++))
+        map_conf.f += 350;
+    }   
+    else if (line[i] != '\0' && line[i] == 'C' && line[i + 1] == ' ' && (++map_conf.counter))
+    {
         fill_ceilling(line, i);
-    else if (line[i] == '1' && map_conf.counter < 8)
-        ft_error("Error\n Check your file");
+        map_conf.c += 670;   
+    }
+    // else if (map_conf.result != 2480)
+    //         ft_error("Error\n Duplucate or missing params");
+    // else if (line[i] == '1' && map_conf.counter < 8)
+    //     ft_error("Error\n Check your file");
 }
 
 char *fill_textures(char *texture, char *line, int i)
@@ -194,15 +237,28 @@ char *fill_textures(char *texture, char *line, int i)
 
 void fill_floor(char *line, int i)
 {
+    int j;
+    int comma;
+
+    j = i;
+    comma = 0;
     i += 2;
+
     while (line[i] == ' ')
         i++;
+     while (line[j])
+    {
+        if (line[j] == ',')
+            comma++;
+        j++;
+    }
     if (!ft_isdigit(line[ft_strlen(line) - 1]))
         ft_error("Error\nCheck floor");
     map_conf.data = ft_split(line + i, ',');
-    printf("%d\n", count_tab(map_conf.data));
     if (count_tab(map_conf.data) > 3)
         ft_error("Error\nCheck floor");
+    if (comma > 2)
+        ft_error("Error\n There is more than two commas");
     checkNum(map_conf.data[0], map_conf.data[1], map_conf.data[2]);
     map_conf.rFloor = ft_atoi(map_conf.data[0]);
     map_conf.gFloor = ft_atoi(map_conf.data[1]);
@@ -222,7 +278,7 @@ void checkNum(char *str, char *str2, char *str3)
     while (str[i] && str2[i] && str3[i])
     {
         if (ft_isdigit(str[i]) == 0 || ft_isdigit(str2[i]) == 0 || ft_isdigit(str3[i]) == 0)
-            ft_error("Error\n Check the Floor");
+            ft_error("Error\n Check your ceiling or floor");
         i++;
     }
 
@@ -230,14 +286,28 @@ void checkNum(char *str, char *str2, char *str3)
 
 void fill_ceilling(char *line, int i)
 {
+    int comma;
+    int j;
+
+    comma = 0;
     i += 2;
+    j = i;
+
     while (line[i] == ' ')
-        i++;
+         i++;
+    while (line[j])
+    {
+        if (line[j] == ',')
+            comma++;
+        j++;
+    }
     if (!ft_isdigit(line[ft_strlen(line) - 1]))
         ft_error("Error\nCheck Ceiling");
     map_conf.data = ft_split(line + i, ',');
-     if (count_tab(map_conf.data) > 3)
-        ft_error("Error\nCheck floor");
+    if (count_tab(map_conf.data) > 3)
+        ft_error("Error\nCheck ceiling");
+    if (comma > 2)
+        ft_error("Error\n There is more than two commas");
     checkNum(map_conf.data[0], map_conf.data[1], map_conf.data[2]);
     map_conf.ceilingR = ft_atoi(map_conf.data[0]);
     map_conf.ceilingG = ft_atoi(map_conf.data[1]);

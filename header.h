@@ -84,6 +84,15 @@ typedef struct map_config
 	int		player;
 	char	**world;
 	int		startMP;
+	int		res;
+	int		no;
+	int		so;
+	int		we;
+	int		ea;
+	int		s;
+	int		f;
+	int		c;
+	int		result;
 }               config_map;
 
 typedef struct rays
