@@ -15,6 +15,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include "../header.h"
 
 
 typedef unsigned char	t_byte;

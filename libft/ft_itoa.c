@@ -38,7 +38,7 @@ char		*ft_itoa(int n)
 		nb = n;
 	size = taille(nb);
 	i = 0;
-	tab = malloc(size + 1 + (n < 0 ? 1 : 0));
+	tab = my_malloc(size + 1 + (n < 0 ? 1 : 0));
 	if (tab == 0)
 		return (0);
 	if (n < 0 && (tab[i] = '-'))

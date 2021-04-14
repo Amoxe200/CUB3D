@@ -154,6 +154,14 @@ typedef struct sp
 }				t_sprite;
 
 
+typedef struct	s_mem
+{
+	void *mem;
+	struct s_mem *next;
+}				t_mem;
+
+
+t_mem			*memory;
 m_player        g_player;
 t_data          img;
 t_data			nt;
@@ -169,6 +177,9 @@ txt_data    	dtx;
 
 int g_tmp_width;
 
+
+void    lst_push_front(t_mem **list, void *mem);
+void    *my_malloc(size_t n);
 void collect_spData(t_sprite *sprite, int indx);
 void store_the_spData(int i, int j, t_sprite *sprites, int indx);
 void	my_mlx_pixel_put(t_data *data,  int x,  int y,  int color);

@@ -27,6 +27,19 @@ void reset(int keycode)
         move_player.turnDirection = 0;
     }
 }
+
+void    free_all(void)
+{
+    // int i;
+
+    // i = -1;
+    // while (map_conf.map[++i])
+    // {
+    //     free(map_conf.map[i]);
+    // }
+    // free(map_conf.map);
+}
+
 int onClickListner(int keycode)
 {
 
@@ -41,6 +54,7 @@ int onClickListner(int keycode)
     else if (keycode == ECHAP)
     {
         exit(1);
+        free_all();
         return (0);
     }
     movement();
@@ -73,11 +87,11 @@ void movement()
     move_player.rotationAngle += move_player.turnDirection * move_player.rotationSpeed;
     move_player.rotationAngle = angleSanitizer(move_player.rotationAngle);
     moveSteps = move_player.walkDirection * move_player.moveSpeed;
-    
+
     if (map_conf.map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
-             [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1' &&
+                    [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1' &&
         map_conf.map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
-             [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '2')
+                    [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '2')
     {
         g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
         g_player.y = nextY + (sin(move_player.rotationAngle) * moveSteps);
@@ -92,9 +106,9 @@ void store_data(char *line, int i)
     collect_text(line, i);
     check_map(line, i);
 
-    map_conf.result = map_conf.res + map_conf.no + 
-    map_conf.so + map_conf.we + map_conf.ea +
-    map_conf.s + map_conf.f + map_conf.c;
+    map_conf.result = map_conf.res + map_conf.no +
+                      map_conf.so + map_conf.we + map_conf.ea +
+                      map_conf.s + map_conf.f + map_conf.c;
 }
 
 void collect_res(char *line, int i)
@@ -104,27 +118,21 @@ void collect_res(char *line, int i)
         rounting(line, i);
 
         map_conf.data = ft_split(line + i, ' ');
-        printf("DATA 0 = %s|DATA 1 = %s\n", map_conf.data[1], map_conf.data[2]);
         map_conf.width = ft_atoi(map_conf.data[1]);
         map_conf.height = ft_atoi(map_conf.data[2]);
-        printf("DATA INT 0 = %d|DATA INT 1 = %d\n", map_conf.width, map_conf.height);
         if (map_conf.width > 2560)
             map_conf.width = 2560;
         if (map_conf.height > 1440)
             map_conf.height = 1440;
         if (map_conf.width <= 0 || map_conf.height <= 0)
-        {
-            printf("%d|%d\n", map_conf.width, map_conf.height);
-            ft_putstr_fd("Error in Resolution\n", 1);
-            exit(0);
-        }
+            ft_error("Error\n Check Resolution");
     }
 }
 
 void rounting(char *line, int i)
 {
-    
-    if (line[i] == 'R' && line[i + 1] == ' '  && (++map_conf.counter))
+
+    if (line[i] == 'R' && line[i + 1] == ' ' && (++map_conf.counter))
     {
         map_conf.res += 100;
         get_res(line);
@@ -142,10 +150,7 @@ void get_res(char *line)
     i = 0;
     temp = ft_split(line, ' ');
     if (temp == NULL || count_tab(temp) != 3)
-    {
-        ft_putstr_fd("Error in resolution\n", 1);
-        exit(0);
-    }
+        ft_error("Error\n In resolution");
     str1 = temp[1];
     str2 = temp[2];
     // change it later
@@ -160,17 +165,6 @@ void get_res(char *line)
         j++;
     if (str2[j])
         ft_error("Error\n Check Resolution");
-    // while (str1[i] || str2[i])
-    // {
-    //     printf("the is digit height = %d|%c\n", ft_isdigit(str1[i]), str1[i]);
-    //     printf("the is digit width = %d|%c\n", ft_isdigit(str2[i]), str2[i]);
-    //     if (ft_isdigit(str1[i]) == 0 || ft_isdigit(str2[i]) == 0)
-    //             ft_error("Error\n Check Resolution");
-        
-    //     // if (str1[i + 1] != ' ' || str2[i + 1] != ' ')
-    //     //     ft_error("Error\n Check Resolution");
-    //     i++;
-    // }
 }
 
 int count_tab(char **tab)
@@ -214,11 +208,11 @@ void collect_text(char *line, int i)
     {
         fill_floor(line, i);
         map_conf.f += 350;
-    }   
+    }
     else if (line[i] != '\0' && line[i] == 'C' && line[i + 1] == ' ' && (++map_conf.counter))
     {
         fill_ceilling(line, i);
-        map_conf.c += 670;   
+        map_conf.c += 670;
     }
     // else if (map_conf.result != 2480)
     //         ft_error("Error\n Duplucate or missing params");
@@ -246,7 +240,7 @@ void fill_floor(char *line, int i)
 
     while (line[i] == ' ')
         i++;
-     while (line[j])
+    while (line[j])
     {
         if (line[j] == ',')
             comma++;
@@ -281,7 +275,6 @@ void checkNum(char *str, char *str2, char *str3)
             ft_error("Error\n Check your ceiling or floor");
         i++;
     }
-
 }
 
 void fill_ceilling(char *line, int i)
@@ -294,7 +287,7 @@ void fill_ceilling(char *line, int i)
     j = i;
 
     while (line[i] == ' ')
-         i++;
+        i++;
     while (line[j])
     {
         if (line[j] == ',')
@@ -372,7 +365,7 @@ double angleSanitizer(float angle)
 
 void rays_init(ray_struct *rays)
 {
-    
+
     rays->angle_norm = move_player.rotationAngle - (rays->fv_angle / 2);
     rays->num_rays = map_conf.width;
     rays->fv_angle = 60 * (M_PI / 180);
@@ -392,7 +385,7 @@ void castAllRays(ray_struct *rays)
     i = 0;
     k = 0;
     text_init();
-    
+
     while (i < rays->num_rays)
     {
         cast(rays, i);
@@ -411,13 +404,13 @@ void checkTheRayDir(ray_struct *rays)
 
 void cast(ray_struct *rays, int i)
 {
-    
+
     rays->angle_norm = angleSanitizer(rays->angle_norm);
     checkTheRayDir(rays);
     checkHorzInter(rays);
     checkVertInter(rays);
     calculDistance(rays, i);
- 
+
     // draw_line(g_player.x * nms, g_player.y * nms, rays[i].wallHitX * nms, rays[i].wallHitY * nms);
 }
 
@@ -448,31 +441,31 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
     float nextHorzTouchX;
     float nextHorzTouchY;
 
-	nextHorzTouchX = xyInter[0];
-	nextHorzTouchY = xyInter[1];
-	rays->foundHorzWallHit = 0;
-	rays->horzwallHitX = 0;
-	rays->horzwallHitY = 0;
+    nextHorzTouchX = xyInter[0];
+    nextHorzTouchY = xyInter[1];
+    rays->foundHorzWallHit = 0;
+    rays->horzwallHitX = 0;
+    rays->horzwallHitY = 0;
 
     int i = 0;
     int j;
 
-	while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
-	nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
+    while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
+           nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
     {
-		float xToCheck;
-		float yToCheck;
+        float xToCheck;
+        float yToCheck;
 
-		xToCheck = nextHorzTouchX;
-		yToCheck = nextHorzTouchY + (rays->isRayFacingUp ? -1 : 0);
-		if (map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)] == '1')
-		{
-			rays->foundHorzWallHit = 1;
-			rays->horzWallContent = map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)];
-			rays->horzwallHitX = nextHorzTouchX;
-			rays->horzwallHitY = nextHorzTouchY;
-			break;
-		}
+        xToCheck = nextHorzTouchX;
+        yToCheck = nextHorzTouchY + (rays->isRayFacingUp ? -1 : 0);
+        if (map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)] == '1')
+        {
+            rays->foundHorzWallHit = 1;
+            rays->horzWallContent = map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)];
+            rays->horzwallHitX = nextHorzTouchX;
+            rays->horzwallHitY = nextHorzTouchY;
+            break;
+        }
         else
         {
             nextHorzTouchX += xStep;
@@ -609,7 +602,7 @@ void render_wall(ray_struct *rays, int i)
 
 void check_map(char *line, int i)
 {
-    if ((line[i] == '1' || line[i] == ' ') && line[i] != '\0') // add line[i] != '/0' && 
+    if ((line[i] == '1' || line[i] == ' ') && line[i] != '\0') // add line[i] != '/0' &&
     {
         map_conf.startMP = 1;
         // while (line[i] == ' ')

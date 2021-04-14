@@ -14,7 +14,7 @@
 
 int		freeptr(char **ptr, int r)
 {
-	free(*ptr);
+	//free(*ptr);
 	*ptr = NULL;
 	return (r);
 }
@@ -31,15 +31,15 @@ int		checksave(char **line, char **save)
 		{
 			*ptr = '\0';
 			*line = ft_strjoin_(*line, *save);
-			free(temp);
+			//free(temp);
 			temp = *save;
 			*save = ft_strdup_(ptr + 1);
-			free(temp);
+			//free(temp);
 			return (1);
 		}
 		*line = ft_strjoin_(*line, *save);
-		free(temp);
-		free(*save);
+		//free(temp);
+		//free(*save);
 		*save = NULL;
 	}
 	return (0);
@@ -53,7 +53,7 @@ int		get_next_line(int fd, char **line)
 	int				rt;
 
 	*line = ft_strdup_("");
-	if (fd < 0 || !(buff = malloc(BUFFER_SIZE + 1)) || read(fd, buff, 0))
+	if (fd < 0 || !(buff = my_malloc(BUFFER_SIZE + 1)) || read(fd, buff, 0))
 		return (-1);
 	if (checksave(line, &save))
 		return (freeptr(&buff, 1));
@@ -62,7 +62,7 @@ int		get_next_line(int fd, char **line)
 		buff[rt] = '\0';
 		ptr = *line;
 		*line = ft_strjoin_(*line, buff);
-		free(ptr);
+		//free(ptr);
 		if ((ptr = ft_strchr_(*line, '\n')))
 		{
 			*ptr = '\0';

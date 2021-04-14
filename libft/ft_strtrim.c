@@ -45,7 +45,7 @@ char		*ft_strtrim(char const *s, char const *set)
 			break ;
 		else
 			fin--;
-	if (!(p = malloc(fin - debut + 1)))
+	if (!(p = my_malloc(fin - debut + 1)))
 		return (NULL);
 	i = -1;
 	while (++i < (fin - debut))

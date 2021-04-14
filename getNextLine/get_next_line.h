@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <stddef.h>
+# include "../header.h"
 # define BUFFER_SIZE 10
 
 int		get_next_line(int fd, char **line);

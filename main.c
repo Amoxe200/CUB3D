@@ -23,7 +23,6 @@ void ft_init()
 
 void    fill_map()
 {
-    
     int i;
     int j;
     int k;
@@ -32,16 +31,16 @@ void    fill_map()
     
     k = 0;
     i = 0;
-   z = map_conf.wlrd;
+    z = map_conf.wlrd;
     map_conf.world = ft_split(map_conf.wlrd, '\n');
-    map_conf.map = malloc((map_conf.numHeight+3) * sizeof(char *));
+    // free(map_conf.wlrd);
+    map_conf.map = my_malloc((map_conf.numHeight+3) * sizeof(char *));
     while (i < map_conf.numHeight + 2)
     {
-        map_conf.map[i] = malloc((g_tmp_width + 3) * sizeof(char));
+        map_conf.map[i] = my_malloc((g_tmp_width + 3) * sizeof(char));
         
         map_conf.map[i][g_tmp_width+2] = '\0';
         i++;
-
     }
     map_conf.map[i] = NULL;
 
@@ -49,8 +48,7 @@ void    fill_map()
     fil_themp(map_conf.map, map_conf.world);
     lookError();
     map_conf.player > 1 ? ft_error("Multiple Players in Maps") : 0;
-     map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
-
+    map_conf.player == 0 ? ft_error("No Players in Maps") : 0;
 }
 
 
@@ -102,7 +100,10 @@ void fil_themp(char **map, char **wrld)
         i++;
         y++;
     }
-
+    i = -1;
+    // while (map_conf.world[++i])
+    //     free(map_conf.world[i]);
+    // free(map_conf.world);
 }
 
 int keys()
@@ -125,8 +126,9 @@ void parse_file()
     {
         i = 0;
         if (map_conf.counter == 8 && map_conf.startMP == 1 && line[0] == '\0')
-            ft_error("Error");// check later
+            ft_error("Error");
         store_data(line, i);
+        free(line);
     }
     if (line != NULL && line[0] != '\0')
     {
@@ -137,18 +139,13 @@ void parse_file()
         ft_error("Error\n map should be the last in the file");
     if (map_conf.result != 2480)
             ft_error("Error\n Duplicate or missing params");
+    free(line);
 }
 
 int main()
 {
     int a;
 
-    //remove it later
-    //setbuf(stdout, NULL);
-    
-    // map_conf.numHeight = 0;
-    // map_conf.numWidth = 0;
-    // g_tmp_width = 0;
     map_conf.wlrd = "";
     parse_file();
     fill_map();

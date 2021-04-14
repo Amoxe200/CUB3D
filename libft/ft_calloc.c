@@ -21,7 +21,7 @@ void	*ft_calloc(size_t count, size_t size)
 		size = 1;
 		count = 1;
 	}
-	ptr = malloc(size * count);
+	ptr = my_malloc(size * count);
 	if (ptr == 0)
 		return (NULL);
 	ft_bzero(ptr, count * size);
