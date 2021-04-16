@@ -21,3 +21,12 @@ void    lst_push_front(t_mem **list, void *mem)
         (*list)->next = NULL;
     }
 }
+
+void    free_memory(t_mem *list)
+{
+    if (!list)
+        return ;
+    free_memory(list->next);
+    free(list->mem);
+    free(list);
+}

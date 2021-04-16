@@ -54,7 +54,7 @@ int onClickListner(int keycode)
     else if (keycode == ECHAP)
     {
         exit(1);
-        free_all();
+        free_memory(memory);
         return (0);
     }
     movement();

@@ -6,19 +6,16 @@ Flags = -Wall -Wextra -Werror -O3
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
-m =parsingSeemsToWorkFine
+m =	someNormes
 
 
 all: $(NAME)
 
 $(NAME):
-	@$(CC) $(Src) $(Search) $(FindLib) $(FrameWroks)
+	@$(CC) $(Src) $(Search) $(FindLib) $(FrameWroks) -o $(NAME)
 fclean:
 	@rm -rf $(NAME)
 re: fclean all
-run: re
-	@./a.out
-
 
 push:
 	@git add .
