@@ -87,3 +87,11 @@ void	fil_themp(char **map, char **wrld)
 		y++;
 	}
 }
+
+void	draw_player(void)
+{
+	int	color;
+
+	color = 0x662E9B;
+	circle(g_player.last_x, g_player.last_y);
+}

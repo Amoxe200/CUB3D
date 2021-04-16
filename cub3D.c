@@ -26,10 +26,6 @@ void	check_thefile(char **file)
 	int	index;
 
 	index = ft_strlen(*file);
-	printf("%s\n", *file);
-	printf("%c\n", file[0][index - 1]);
-	printf("%c\n", file[0][index - 2]);
-	printf("%c\n", file[0][index - 3]);
 	if (file[0][index - 1] != 'b' || file[0][index - 2]
 			!= 'u' || file[0][index - 3] != 'c')
 		ft_error("Error\n Check the file extension");

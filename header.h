@@ -181,6 +181,7 @@ int g_tmp_width;
 
 void    lst_push_front(t_mem **list, void *mem);
 void    *my_malloc(size_t n);
+void	circle(int x, int y);
 void    free_memory(t_mem *list);
 void    read_line(char *line, int fd);
 void	collect_spData(t_sprite *sprite, int indx);
