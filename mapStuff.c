@@ -51,8 +51,9 @@ void	fil_space(char **map)
 	while (i < map_conf.numHeight + 2)
 	{
 		j = 0;
-		while (map[i][j])
+		while (j < g_tmp_width + 2)
 		{
+			printf("hello\n");
 			map[i][j] = ' ';
 			j++;
 		}

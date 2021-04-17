@@ -59,7 +59,7 @@ void	read_line(char *line, int fd)
 int	main(int argc, char **argv)
 {
 	int	a;
-
+	setbuf(stdout, NULL);
 	memory = NULL;
 	map_conf.wlrd = "";
 	parse_file(&argv[1]);

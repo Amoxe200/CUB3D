@@ -6,7 +6,7 @@ Flags = -Wall -Wextra -Werror -O3
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
-m =	aLittleBitNormed
+m =	aLittleBitNormedv1
 
 
 all: $(NAME)
