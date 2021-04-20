@@ -112,6 +112,10 @@ typedef struct rays
 	float	distance;
 	float	num_rays;
 	float	angle_norm;
+	float	hxstp;
+	float	hystp;
+	float	hxintr;
+	float	hyintr;
 	int		wall_strWidth;
 	int		isRayFacingDown;
 	int		isRayFacingUp;
@@ -184,6 +188,7 @@ int g_tmp_width;
 
 
 void    lst_push_front(t_mem **list, void *mem);
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void    *my_malloc(size_t n);
 void	circle();
 void	catchThem(int j, int i);
@@ -205,7 +210,8 @@ void	parse_file(char **file_path);
 void	movePlayer();
 void	ft_line(float angle,int radius, int color);
 void	turnDirect();
-void	movement();
+void	movement(void);
+int			has_wall(float x, float y);
 void	checkWall();
 void	store_data(char *line, int i);
 char	*fill_textures(char *texture, char *line, int i);
@@ -259,6 +265,11 @@ void lookError();
 void checkNum(char *str, char *str2, char *str3);
 void fil_space(char **map);
 void fil_themp(char **map, char **wrld);
+int	destroy(void);
+void textnsw(char *line, int i);
+void	textesf(char *line, int i);
+void	checkFloor(void);
+void	checkceeling(void);
 //intialize variables
 /*
 img = 0;

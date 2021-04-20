@@ -54,11 +54,7 @@ void	read_line(char *line, int fd)
 		ft_error("Error\n Duplicate or missing params");
 	free(line);
 }
-int destroy(void)
-{
-	exit(1);
-	free_memory(memory);
-}
+
 int	main(int argc, char **argv)
 {
 	int	a;
@@ -74,9 +70,9 @@ int	main(int argc, char **argv)
 	img.addr = (int *)mlx_get_data_addr(img.img, &a, &a, &a);
 	render();
 	mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
-	mlx_hook(img.win_ptr, 2, 1L << 0, onClickListner, (void*)0);
-	mlx_hook(img.win_ptr, 3, 1L << 1, reset_player, (void*)0);
-	mlx_hook(img.win_ptr, 17, 0L, destroy, (void*)0);
+	mlx_hook(img.win_ptr, 2, 1L << 0, onClickListner, (void *)0);
+	mlx_hook(img.win_ptr, 3, 1L << 1, reset_player, (void *)0);
+	mlx_hook(img.win_ptr, 17, 0L, destroy, (void *)0);
 	mlx_loop(img.mlx_ptr);
 	return (0);
 }

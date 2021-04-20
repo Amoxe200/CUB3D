@@ -68,13 +68,13 @@ void	fil_themp(char **map, char **wrld)
 	int	y;
 	int	h;
 
-	i = 0;
+	i = -1;
 	y = 0;
-	while (wrld[i])
+	while (wrld[++i])
 	{
-		j = 0;
+		j = -1;
 		h = 0;
-		while (wrld[i][j])
+		while (wrld[i][++j])
 		{
 			map[y][h] = map_conf.world[i][j];
 			if (ft_strchr("NSEW", map_conf.map[i][j]))
@@ -84,10 +84,8 @@ void	fil_themp(char **map, char **wrld)
 			}
 			else if (ft_strchr("2", map_conf.map[i][j]))
 				map_conf.spNumber++;
-			j++;
 			h++;
 		}
-		i++;
 		y++;
 	}
 }
