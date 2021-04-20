@@ -10,41 +10,6 @@ double angleSanitizer(float angle)
     return (angle);
 }
 
-void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
-{
-    float nextHorzTouchX;
-    float nextHorzTouchY;
-
-    nextHorzTouchX = xyInter[0];
-    nextHorzTouchY = xyInter[1];
-    rays->foundHorzWallHit = 0;
-    rays->horzwallHitX = 0;
-    rays->horzwallHitY = 0;
-
-    while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
-           nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
-    {
-        float xToCheck;
-        float yToCheck;
-
-        xToCheck = nextHorzTouchX;
-        yToCheck = nextHorzTouchY + (rays->isRayFacingUp ? -1 : 0);
-        if (map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)] == '1')
-        {
-            rays->foundHorzWallHit = 1;
-            rays->horzWallContent = map_conf.map[(int)(yToCheck / TILE_SIZE)][(int)(xToCheck / TILE_SIZE)];
-            rays->horzwallHitX = nextHorzTouchX;
-            rays->horzwallHitY = nextHorzTouchY;
-            break;
-        }
-        else
-        {
-            nextHorzTouchX += xStep;
-            nextHorzTouchY += yStep;
-        }
-    }
-}
-
 void checkVertInter(ray_struct *rays)
 {
     float xStep;

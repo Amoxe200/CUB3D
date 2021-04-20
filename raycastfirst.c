@@ -50,15 +50,18 @@ void	cast(ray_struct *rays, int i)
 
 void	checkHorzInter(ray_struct *rays)
 {
-	
-	float	xyInter[2];
-
-	
 	rays->hyintr = floor((g_player.y / TILE_SIZE)) * TILE_SIZE;
-	rays->hyintr+= rays->isRayFacingDown ? TILE_SIZE : 0;
-	rays->hxintr = g_player.x + (rays->hyintr - g_player.y) / tan(rays->angle_norm);
+	if (rays->isRayFacingDown)
+		rays->hyintr += TILE_SIZE;
+	else
+		rays->hyintr += 0;
+	rays->hxintr = g_player.x + (rays->hyintr - g_player.y)
+		/ tan(rays->angle_norm);
 	rays->hystp = TILE_SIZE;
-	rays->hystp *= rays->isRayFacingUp ? -1 : 1;
+	if (rays->isRayFacingUp)
+		rays->hystp *= -1;
+	else
+		rays->hystp *= 1;
 	rays->hxstp = TILE_SIZE / tan(rays->angle_norm);
 	if (rays->isRayFacingLeft && rays->hxstp > 0)
 		rays->hxstp *= -1;
@@ -68,7 +71,7 @@ void	checkHorzInter(ray_struct *rays)
 		rays->hxstp *= -1;
 	else
 		rays->hxstp *= 1;
-	xyInter[0] = rays->hxintr;
-	xyInter[1] = rays->hyintr;
-	checkWallHorz(xyInter, rays->hxstp, rays->hystp, rays);
+	rays->xyinh[0] = rays->hxintr;
+	rays->xyinh[1] = rays->hyintr;
+	checkWallHorz(rays);
 }

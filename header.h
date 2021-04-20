@@ -104,6 +104,8 @@ typedef struct rays
 {
 	float	horzwallHitX;
 	float	horzwallHitY;
+	float	nexthtx;
+	float	nexthty;
 	float	vertwallHitX;
 	float	vertwallHitY;
 	float	wallHitX;
@@ -116,6 +118,7 @@ typedef struct rays
 	float	hystp;
 	float	hxintr;
 	float	hyintr;
+	float	xyinh[2];
 	int		wall_strWidth;
 	int		isRayFacingDown;
 	int		isRayFacingUp;
@@ -233,7 +236,7 @@ void cast(ray_struct *rays, int i);
 void checkTheRayDir(ray_struct *rays);
 void castAllRays(ray_struct *rays);
 void checkHorzInter(ray_struct *rays);
-void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays);
+void checkWallHorz(ray_struct *rays);
 void checkVertInter(ray_struct *rays);
 void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays);
 double distanceBpoint(float x1, float y1, float x2, float y2);
@@ -270,6 +273,8 @@ void textnsw(char *line, int i);
 void	textesf(char *line, int i);
 void	checkFloor(void);
 void	checkceeling(void);
+void	initwall(ray_struct *rays);
+void	checker(ray_struct *rays, float xToCheck, float yToCheck);
 //intialize variables
 /*
 img = 0;
