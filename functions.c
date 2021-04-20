@@ -26,6 +26,11 @@ void reset(int keycode)
     {
         move_player.turnDirection = 0;
     }
+    else if (keycode == A || keycode == D)
+    {
+        move_player.sideSteps = 0;
+        move_player.walkDirection = 0;
+    }
 }
 
 void    free_all(void)
@@ -42,60 +47,86 @@ void    free_all(void)
 
 int onClickListner(int keycode)
 {
-
     if (keycode == UP_DIR) // w
         move_player.walkDirection = 1;
-    else if (keycode == DOWN_DIR) // s
+    if (keycode == DOWN_DIR) // s
         move_player.walkDirection = -1;
-    else if (keycode == RIGHT_ARROW)
+    if (keycode == RIGHT_ARROW)
         move_player.turnDirection = 1;
-    else if (keycode == LEFT_ARROW)
+    if (keycode == LEFT_ARROW)
         move_player.turnDirection = -1;
-    else if (keycode == ECHAP)
+    if (keycode == A)
+        {
+            move_player.sideSteps = -M_PI_2;
+            move_player.walkDirection = 1;
+        }
+    if (keycode == D)
+        {
+            move_player.sideSteps = M_PI_2;
+           move_player.walkDirection = 1;
+        }
+    if (keycode == ECHAP)
     {
         exit(1);
         free_memory(memory);
         return (0);
     }
+   
     movement();
+    
     reset(keycode);
+    
     return 0;
 }
 int reset_player(int key)
 {
     if (key == UP_DIR || key == DOWN_DIR)
-    {
         move_player.walkDirection = 0;
-        //g_pl.moove_forward_or_backward = 0;
+    if (key == A || key == D)
+    {
+        move_player.sideSteps = 0;
+        move_player.walkDirection = 0;
     }
     else if (key == 124)
         move_player.turnDirection = 0;
     else if (key == 123)
         move_player.turnDirection = 0;
-
     return (0);
 }
+
+int			has_wall(float x, float y)
+{
+	int ughx;
+	int ughy;
+
+	if (x < 0 || x > (map_conf.width * TILE_SIZE) ||
+		y < 0 || y > (map_conf.height * TILE_SIZE))
+		return (1);
+	ughx = floor(x / TILE_SIZE);
+	ughy = floor(y / TILE_SIZE);
+	if (map_conf.map[ughy][ughx] == '1')
+		return (1);
+	else
+		return (0);
+}
+
 
 void movement()
 {
     float moveSteps;
     float nextX;
     float nextY;
-    nextY = g_player.y;
-    nextX = g_player.x;
 
     move_player.rotationAngle += move_player.turnDirection * move_player.rotationSpeed;
     move_player.rotationAngle = angleSanitizer(move_player.rotationAngle);
     moveSteps = move_player.walkDirection * move_player.moveSpeed;
+    nextY = g_player.y + sin(move_player.rotationAngle + move_player.sideSteps) * moveSteps;
+    nextX = g_player.x + cos(move_player.rotationAngle + move_player.sideSteps) * moveSteps;
+    if ((!has_wall(g_player.x, nextY + 20)) && (!has_wall(g_player.x, nextY - 20)))
+		g_player.y = nextY;
+	if ((!has_wall(nextX + 20, g_player.y)) && (!has_wall(nextX - 20, g_player.y)))
+		g_player.x = nextX;
 
-    if (map_conf.map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
-                    [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '1' &&
-        map_conf.map[(int)(nextY + (sin(move_player.rotationAngle) * moveSteps)) / TILE_SIZE]
-                    [(int)(nextX + (cos(move_player.rotationAngle) * moveSteps)) / TILE_SIZE] != '2')
-    {
-        g_player.x = nextX + (cos(move_player.rotationAngle) * moveSteps);
-        g_player.y = nextY + (sin(move_player.rotationAngle) * moveSteps);
-    }
 }
 
 void store_data(char *line, int i)
@@ -154,8 +185,6 @@ void get_res(char *line)
     str1 = temp[1];
     str2 = temp[2];
     // change it later
-    printf("the height = %s\n", str1);
-    printf("the Width  = %s\n", str2);
     j = i;
     while (str1[i] && ft_isdigit(str1[i]) == 1)
         i++;
@@ -311,7 +340,7 @@ void fill_ceilling(char *line, int i)
     g_ceeling = (map_conf.ceilingR << 16) | (map_conf.ceilingG << 8) | map_conf.ceilingB;
 }
 
-void creatingMap(char *line, int i)
+void creatingMap(char *line)
 {
     int save = ft_strlen(line);
     char *tmp;
@@ -351,6 +380,7 @@ void init_pl(int y, int x)
 {
     g_player.x = x * TILE_SIZE + (TILE_SIZE / 2);
     g_player.y = y * TILE_SIZE + (TILE_SIZE / 2);
+    map_conf.player++;
 }
 
 double angleSanitizer(float angle)
@@ -374,11 +404,7 @@ void rays_init(ray_struct *rays)
 void castAllRays(ray_struct *rays)
 {
     int i;
-
     int k;
-    int h;
-
-    float rayAngle;
 
     rays_init(rays);
 
@@ -446,9 +472,6 @@ void checkWallHorz(float *xyInter, float xStep, float yStep, ray_struct *rays)
     rays->foundHorzWallHit = 0;
     rays->horzwallHitX = 0;
     rays->horzwallHitY = 0;
-
-    int i = 0;
-    int j;
 
     while (nextHorzTouchX > 0 && nextHorzTouchX < g_tmp_width * TILE_SIZE &&
            nextHorzTouchY > 0 && nextHorzTouchY < map_conf.numHeight * TILE_SIZE)
@@ -607,7 +630,7 @@ void check_map(char *line, int i)
         map_conf.startMP = 1;
         // while (line[i] == ' ')
         //     i++;
-        creatingMap(line, i);
+        creatingMap(line);
     }
 }
 
@@ -708,13 +731,13 @@ void renderSpProj(t_sprite *sprites, ray_struct *rays)
         else
             sprites[i].visibSp = 0;
 
-        sortSprite(sprites, vbNumSp, visibSprite);
-        renderSprite(sprites, vbNumSp, visibSprite, rays);
+        sortSprite(vbNumSp, visibSprite);
+        renderSprite(vbNumSp, visibSprite, rays);
         i++;
     }
 }
 
-void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite)
+void sortSprite(int vbNumber, t_sprite *visibleSprite)
 {
     int i;
     int j;
@@ -738,7 +761,7 @@ void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite)
     }
 }
 
-void renderSprite(t_sprite *sprites, int vbNumber, t_sprite *visibSprite, ray_struct *rays)
+void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
 {
     int i;
     int y;
@@ -833,7 +856,6 @@ void draw_sprite_in_map(t_sprite *sprite)
 
 void store_the_spData(int i, int j, t_sprite *sprites, int indx)
 {
-    int a;
     sprites[indx].x = (i + 0.5) * TILE_SIZE;
     sprites[indx].y = (j + 0.5) * TILE_SIZE;
 }

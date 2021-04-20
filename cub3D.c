@@ -3,8 +3,6 @@
 int	keys(void)
 {
 	render();
-	mlx_hook(img.win_ptr, 2, 1L << 0, onClickListner, &img);
-	mlx_hook(img.win_ptr, 3, 0, reset_player, (void *)0);
 	return (1);
 }
 
@@ -13,6 +11,7 @@ void	parse_file(char **file_path)
 	int		fd;
 	char	*line;
 
+	line = NULL;
 	fd = open(*file_path, O_RDONLY);
 	if (fd < 0)
 		ft_error("Error\n Check You file");
@@ -55,10 +54,16 @@ void	read_line(char *line, int fd)
 		ft_error("Error\n Duplicate or missing params");
 	free(line);
 }
-
+int destroy(void)
+{
+	exit(1);
+	free_memory(memory);
+}
 int	main(int argc, char **argv)
 {
 	int	a;
+
+	(void)argc;
 	setbuf(stdout, NULL);
 	memory = NULL;
 	map_conf.wlrd = "";
@@ -67,7 +72,11 @@ int	main(int argc, char **argv)
 	ft_init();
 	img.img = mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
 	img.addr = (int *)mlx_get_data_addr(img.img, &a, &a, &a);
+	render();
 	mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
+	mlx_hook(img.win_ptr, 2, 1L << 0, onClickListner, (void*)0);
+	mlx_hook(img.win_ptr, 3, 1L << 1, reset_player, (void*)0);
+	mlx_hook(img.win_ptr, 17, 0L, destroy, (void*)0);
 	mlx_loop(img.mlx_ptr);
 	return (0);
 }

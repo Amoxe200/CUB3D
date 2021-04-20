@@ -2,17 +2,18 @@
 NAME = cub3D
 CC = gcc
 Src = *.c libft/*.c getNextLine/*.c
-Flags = -Wall -Wextra -Werror -O3
+Flags = -Wall -Wextra -Werror -g
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
-m =	aLittleBitNormedv1
+m =	beforeAllNormed
+
 
 
 all: $(NAME)
 
 $(NAME):
-	@$(CC) $(Src) $(Search) $(FindLib) $(FrameWroks) -o $(NAME)
+	@$(CC) $(Src) $(Flags) $(Search) $(FindLib) $(FrameWroks) -o $(NAME)
 fclean:
 	@rm -rf $(NAME)
 re: fclean all

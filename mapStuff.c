@@ -7,6 +7,7 @@ void	ft_init(void)
 	move_player.radius = 3;
 	move_player.turnDirection = 0;
 	move_player.walkDirection = 0;
+	move_player.walkside = 0;
 	move_player.rotationAngle = 180 * (M_PI / 180.0);
 	move_player.moveSpeed = 20.0;
 	move_player.rotationSpeed = 20 * (M_PI / 180.0);
@@ -53,7 +54,6 @@ void	fil_space(char **map)
 		j = 0;
 		while (j < g_tmp_width + 2)
 		{
-			printf("hello\n");
 			map[i][j] = ' ';
 			j++;
 		}
@@ -78,7 +78,10 @@ void	fil_themp(char **map, char **wrld)
 		{
 			map[y][h] = map_conf.world[i][j];
 			if (ft_strchr("NSEW", map_conf.map[i][j]))
+			{
 				init_pl(i, j);
+				map_conf.map[i][j] = '0';
+			}
 			else if (ft_strchr("2", map_conf.map[i][j]))
 				map_conf.spNumber++;
 			j++;
@@ -94,5 +97,5 @@ void	draw_player(void)
 	int	color;
 
 	color = 0x662E9B;
-	circle(g_player.last_x, g_player.last_y);
+	circle();
 }

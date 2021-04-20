@@ -18,10 +18,12 @@
 #define     RIGHT_ARROW 124
 #define     RIGHT_DIR 2
 #define     ECHAP 53
+#define		A 0
+#define		D 2
 #define     LEFT_DIR 0
 #define     TILE_SIZE 64
 #define     NUM_RAYS
-#define		nms 0.2
+#define		nms 0.1
 #define		FOV (60 * (M_PI / 180))
 #define		EPSILON 0.2
 
@@ -55,6 +57,8 @@ typedef struct mv_player
 	float	rotationAngle;
 	float	moveSpeed;
 	float	rotationSpeed;
+	float	sideSteps;
+	int		walkside;
 }               cls_player;
 
 typedef struct map_config
@@ -181,7 +185,7 @@ int g_tmp_width;
 
 void    lst_push_front(t_mem **list, void *mem);
 void    *my_malloc(size_t n);
-void	circle(int x, int y);
+void	circle();
 void	catchThem(int j, int i);
 void    free_memory(t_mem *list);
 void    read_line(char *line, int fd);
@@ -207,7 +211,7 @@ void	store_data(char *line, int i);
 char	*fill_textures(char *texture, char *line, int i);
 void	fill_floor(char *line, int i);
 void	fill_ceilling(char *line, int i);
-void	creatingMap(char *line, int i);
+void	creatingMap(char *line);
 size_t	count_line_skip_space(const char *str);
 void	ray_cast();
 int		reset_player(int key);
@@ -231,7 +235,6 @@ void calculDistance(ray_struct *rays, int i);
 void store_array(ray_struct *rays, int i);
 void render_wall(ray_struct *rays, int i);
 void render_ray(ray_struct *rays);
-
 void    text_init(void);
 int assign_text(int i, ray_struct *rays);
 void collect_res(char *line, int i);
@@ -242,9 +245,9 @@ void renderSpProj(t_sprite  *sprites, ray_struct *rays);
 void renderMapsp( t_sprite *sprites, int i, int j, int indx);
 void draw_px(int x, int y, t_data data, int color);
 void draw_sprite_in_map(t_sprite *sprite);
-void renderSprite(t_sprite *sprite, int vbNumber, t_sprite *visibSprite, ray_struct *rays);
+void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays);
 int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays);
-void sortSprite(t_sprite *sprites, int vbNumber, t_sprite *visibleSprite);
+void sortSprite(int vbNumber, t_sprite *visibleSprite);
 void	ft_init(void);
 void rounting(char *line, int i);
 void get_res(char *line);

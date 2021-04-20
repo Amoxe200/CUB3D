@@ -5,7 +5,7 @@ void	render(void)
 	t_sprite	*sprites;
 	ray_struct	rays[2561];
 
-	sprites = malloc(sizeof(t_sprite) * (map_conf.spNumber + 1));
+	sprites = my_malloc(sizeof(t_sprite) * (map_conf.spNumber + 1));
 	castAllRays(rays);
 	draw_map(sprites);
 	renderSpProj(sprites, rays);
@@ -80,7 +80,7 @@ void	draw_px(int x, int y, t_data data, int color)
 	}
 }
 
-void	circle(int x, int y)
+void	circle(void)
 {
 	int		radius;
 	float	angle;
