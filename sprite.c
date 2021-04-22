@@ -36,11 +36,6 @@ void	renderSpProj(t_sprite *sprites, ray_struct *rays)
 	}
 }
 
-// void	spCalc(t_sprite *sprites, int i, t_sprite *vbSp, int vbNum)
-// {
-	
-// }
-
 void	sortSprite(int vbNumber, t_sprite *visibleSprite)
 {
 	int			i;
