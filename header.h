@@ -300,6 +300,7 @@ void	vchecker(ray_struct *rays, float xtoCheck, float ytoCheck);
 void	compDist(float horzHitDistance, float vertHitDistance, ray_struct *rays, int i);
 void	text_checker(void);
 void	calcsp(t_sprite *sprites, int i, t_sprite *vbSp, int *vbNum);
+void	spinittwo(t_sprite sprite, t_spt *sp, ray_struct *rays);
 // void	spinitone(t_sprite sprite, t_spt sp);
 //intialize variables
 /*

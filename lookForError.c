@@ -44,3 +44,9 @@ void	checkFloor(void)
 	g_floor = (map_conf.rFloor << 16)
 		| (map_conf.gFloor << 8) | map_conf.bFloor;
 }
+
+int	ft_error(char *err)
+{
+	printf("%s\n", err);
+	exit(0);
+}
