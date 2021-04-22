@@ -171,6 +171,20 @@ typedef struct sp
 	int		offY;
 }				t_sprite;
 
+typedef struct s_spt
+{
+	float spHeight;
+    float spWidth;
+    float distProjPlan;
+    float spTpY;
+    float spBtY;
+    float spriteAngle;
+    float spritePosX;
+    float spriteLeftX;
+    float SpriteRightX;
+    float perdistance;
+}				t_spt;
+
 
 typedef struct	s_mem
 {
@@ -285,7 +299,8 @@ void 	vinitwall(ray_struct *rays);
 void	vchecker(ray_struct *rays, float xtoCheck, float ytoCheck);
 void	compDist(float horzHitDistance, float vertHitDistance, ray_struct *rays, int i);
 void	text_checker(void);
-void	spCalc(t_sprite *sprites, int i, t_sprite *vbSp, int vbNum);
+void	calcsp(t_sprite *sprites, int i, t_sprite *vbSp, int *vbNum);
+// void	spinitone(t_sprite sprite, t_spt sp);
 //intialize variables
 /*
 img = 0;

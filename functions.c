@@ -27,50 +27,41 @@ void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
 {
     int i;
     int y;
-    float spHeight;
-    float spWidth;
-    float distProjPlan;
-    float spTpY;
-    float spBtY;
-    float spriteAngle;
-    float spritePosX;
-    float spriteLeftX;
-    float SpriteRightX;
-    float perdistance;
+    t_spt    sp;
     t_sprite sprite;
     int x;
 
     i = 0;
 
     // check with this part later and remove the y test
-    distProjPlan = ((map_conf.width / 2) / tan(FOV / 2));
+    sp.distProjPlan = ((map_conf.width / 2) / tan(FOV / 2));
     while (i < vbNumber)
     {
         sprite = visibSprite[i];
-        perdistance = sprite.distance * cos(sprite.angle);
-        spHeight = (TILE_SIZE / perdistance) * distProjPlan;
-        spWidth = spHeight;
-        spTpY = (map_conf.height / 2) - (spHeight / 2);
-        spTpY = (spTpY < 0) ? 0 : spTpY;
-        spBtY = (map_conf.height / 2) + (spHeight / 2);
-        spBtY = (spBtY > map_conf.height) ? map_conf.height : spBtY;
+        sp.perdistance = sprite.distance * cos(sprite.angle);
+        sp.spHeight = (TILE_SIZE / sp.perdistance) * sp.distProjPlan;
+        sp.spWidth = sp.spHeight;
+        sp.spTpY = (map_conf.height / 2) - (sp.spHeight / 2);
+        sp.spTpY = (sp.spTpY < 0) ? 0 : sp.spTpY;
+        sp.spBtY = (map_conf.height / 2) + (sp.spHeight / 2);
+        sp.spBtY = (sp.spBtY > map_conf.height) ? map_conf.height : sp.spBtY;
 
-        spriteAngle = atan2(sprite.y - g_player.y, sprite.x - g_player.x) - move_player.rotationAngle;
-        spritePosX = tan(spriteAngle) * distProjPlan;
-        spriteLeftX = (map_conf.width / 2) + spritePosX - (spWidth / 2);
-        SpriteRightX = spriteLeftX + spWidth;
-        x = spriteLeftX;
-        while (x < SpriteRightX)
+        sp.spriteAngle = atan2(sprite.y - g_player.y, sprite.x - g_player.x) - move_player.rotationAngle;
+        sp.spritePosX = tan(sp.spriteAngle) * sp.distProjPlan;
+        sp.spriteLeftX = (map_conf.width / 2) + sp.spritePosX - (sp.spWidth / 2);
+        sp.SpriteRightX = sp.spriteLeftX + sp.spWidth;
+        x = sp.spriteLeftX;
+        while (x < sp.SpriteRightX)
         {
-            float texelWidth = (64 / spWidth);
-            sprite.offX = (x - spriteLeftX) * texelWidth < 0 ? 0 : (x - spriteLeftX) * texelWidth;
-            y = spTpY;
-            while (y < spBtY)
+            float texelWidth = (64 / sp.spWidth);
+            sprite.offX = (x - sp.spriteLeftX) * texelWidth < 0 ? 0 : (x - sp.spriteLeftX) * texelWidth;
+            y = sp.spTpY;
+            while (y < sp.spBtY)
             {
                 if (x > 0 && x < map_conf.width && y > 0 && y < map_conf.height)
                 {
-                    int distFtop = y + (spHeight / 2) - (map_conf.height / 2);
-                    sprite.offY = distFtop * (64 / spHeight);
+                    int distFtop = y + (sp.spHeight / 2) - (map_conf.height / 2);
+                    sprite.offY = distFtop * (64 / sp.spHeight);
                     //printf("%d\n", sprite.offY);
                     assigne_sprite(sprite, x, y, rays);
                 }

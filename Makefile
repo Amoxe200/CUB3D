@@ -6,7 +6,7 @@ Flags = -Wall -Wextra -Werror -g
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
-m =	beforeNormSpFun
+m =	normsp
 
 
 
