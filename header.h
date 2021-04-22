@@ -106,6 +106,8 @@ typedef struct rays
 	float	horzwallHitY;
 	float	nexthtx;
 	float	nexthty;
+	float	nextvtx;
+	float	nextvty;
 	float	vertwallHitX;
 	float	vertwallHitY;
 	float	wallHitX;
@@ -119,6 +121,11 @@ typedef struct rays
 	float	hxintr;
 	float	hyintr;
 	float	xyinh[2];
+	float	vxstp;
+	float	vystp;
+	float	vxintr;
+	float	vyintr;
+	float	xyintrv[2];
 	int		wall_strWidth;
 	int		isRayFacingDown;
 	int		isRayFacingUp;
@@ -162,7 +169,6 @@ typedef struct sp
 	int		visibSp;
 	int		offX;
 	int		offY;
-
 }				t_sprite;
 
 
@@ -238,7 +244,7 @@ void castAllRays(ray_struct *rays);
 void checkHorzInter(ray_struct *rays);
 void checkWallHorz(ray_struct *rays);
 void checkVertInter(ray_struct *rays);
-void checkWallVert(float *xyInter, float xStep, float yStep, ray_struct *rays);
+void checkWallVert(ray_struct *rays);
 double distanceBpoint(float x1, float y1, float x2, float y2);
 void calculDistance(ray_struct *rays, int i);
 void store_array(ray_struct *rays, int i);
@@ -275,6 +281,11 @@ void	checkFloor(void);
 void	checkceeling(void);
 void	initwall(ray_struct *rays);
 void	checker(ray_struct *rays, float xToCheck, float yToCheck);
+void 	vinitwall(ray_struct *rays);
+void	vchecker(ray_struct *rays, float xtoCheck, float ytoCheck);
+void	compDist(float horzHitDistance, float vertHitDistance, ray_struct *rays, int i);
+void	text_checker(void);
+void	spCalc(t_sprite *sprites, int i, t_sprite *vbSp, int vbNum);
 //intialize variables
 /*
 img = 0;
