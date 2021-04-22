@@ -1,12 +1,12 @@
 
-NAME = cub3D
+NAME = header
 CC = gcc
 Src = *.c libft/*.c getNextLine/*.c
 Flags = -Wall -Wextra -Werror -g
 Search = -I /usr/local/include
 FindLib = -L /usr/local/lib/ -lmlx
 FrameWroks = -framework OpenGl -framework AppKit
-m =	spritenormed
+m =	normsp
 
 
 
