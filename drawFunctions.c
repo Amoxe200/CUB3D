@@ -16,7 +16,7 @@ void	draw_square(int x, int y, t_data data, int color)
 		i = c;
 		while (i < c + TILE_SIZE)
 		{
-			my_mlx_pixel_put(&data, i * nms, j * nms, color);
+			my_mlx_pixel_put(&data, i * NMS, j * NMS, color);
 			i++;
 		}
 		j++;
@@ -86,8 +86,8 @@ void	render_ray(ray_struct *rays)
 	i = 0;
 	while (i < rays -> num_rays)
 	{
-		draw_line(g_player.x * nms, g_player.y * nms,
-			rays[i].wallHitX * nms, rays[i].wallHitY * nms);
+		draw_line(g_player.x * NMS, g_player.y * NMS,
+			rays[i].wallHitX * NMS, rays[i].wallHitY * NMS);
 		i++;
 	}
 }

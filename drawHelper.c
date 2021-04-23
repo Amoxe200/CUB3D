@@ -28,7 +28,7 @@ void	ft_line(float angle, int radius, int color)
 	{
 		nextX = g_player.x + cos(angle) * k;
 		nextY = g_player.y + sin(angle) * k;
-		my_mlx_pixel_put(&img, nextX * nms, nextY * nms, color);
+		my_mlx_pixel_put(&img, nextX * NMS, nextY * NMS, color);
 		k++;
 	}
 }
@@ -73,7 +73,7 @@ void	draw_px(int x, int y, t_data data, int color)
 		i = c;
 		while (i < c + 2)
 		{
-			my_mlx_pixel_put(&data, i * nms, j * nms, color);
+			my_mlx_pixel_put(&data, i * NMS, j * NMS, color);
 			i++;
 		}
 		j++;

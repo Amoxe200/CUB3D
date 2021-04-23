@@ -6,12 +6,20 @@
 /*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 16:09:54 by aaqari            #+#    #+#             */
-/*   Updated: 2021/04/22 16:10:27 by aaqari           ###   ########.fr       */
+/*   Updated: 2021/04/23 13:04:13 by aaqari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCT_H
 # define STRUCT_H
+
+# define	D 2
+# define	LEFT_DIR 0
+# define	TILE_SIZE 64
+# define	NUM_RAYS
+# define	NMS 0.1
+# define	FOV 1.0471975512
+# define	EPSILON 0.2
 
 typedef struct	s_data
 {
@@ -30,6 +38,7 @@ typedef struct	s_player
 	float	y;
 	int		last_x;
 	int		last_y;
+	
 
 }				m_player;
 
