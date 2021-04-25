@@ -1,11 +1,5 @@
 #include "header.h"
 
-int	keys(void)
-{
-	render();
-	return (1);
-}
-
 void	parse_file(char **file_path)
 {
 	int		fd;
@@ -58,7 +52,7 @@ void	read_line(char *line, int fd)
 int	main(int argc, char **argv)
 {
 	int	a;
-
+	
 	(void)argc;
 	setbuf(stdout, NULL);
 	memory = NULL;
@@ -69,7 +63,7 @@ int	main(int argc, char **argv)
 	img.img = mlx_new_image(img.mlx_ptr, map_conf.width, map_conf.height);
 	img.addr = (int *)mlx_get_data_addr(img.img, &a, &a, &a);
 	render();
-	mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
+	// mlx_loop_hook(img.mlx_ptr, keys, (void *)0);
 	mlx_hook(img.win_ptr, 2, 1L << 0, onClickListner, (void *)0);
 	mlx_hook(img.win_ptr, 3, 1L << 1, reset_player, (void *)0);
 	mlx_hook(img.win_ptr, 17, 0L, destroy, (void *)0);
