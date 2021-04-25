@@ -6,14 +6,14 @@ double distanceBpoint(float x1, float y1, float x2, float y2)
 }
 
 
-void check_map(char *line, int i)
+void check_map(char *line, int i, t_struct *g)
 {
     if ((line[i] == '1' || line[i] == ' ') && line[i] != '\0') // add line[i] != '/0' &&
     {
-        map_conf.startMP = 1;
+        g->map_conf.startMP = 1;
         // while (line[i] == ' ')
         //     i++;
-        creatingMap(line);
+        creatingMap(line, g);
     }
 }
 
@@ -23,7 +23,7 @@ int ft_error(char *err)
     exit(0);
 }
 
-void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
+void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays, t_struct *g)
 {
     int i;
     int y;
@@ -43,21 +43,21 @@ void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
     i = 0;
 
     // check with this part later and remove the y test
-    distProjPlan = ((map_conf.width / 2) / tan(FOV / 2));
+    distProjPlan = ((g->map_conf.width / 2) / tan(FOV / 2));
     while (i < vbNumber)
     {
         sprite = visibSprite[i];
         perdistance = sprite.distance * cos(sprite.angle);
         spHeight = (TILE_SIZE / perdistance) * distProjPlan;
         spWidth = spHeight;
-        spTpY = (map_conf.height / 2) - (spHeight / 2);
+        spTpY = (g->map_conf.height / 2) - (spHeight / 2);
         spTpY = (spTpY < 0) ? 0 : spTpY;
-        spBtY = (map_conf.height / 2) + (spHeight / 2);
-        spBtY = (spBtY > map_conf.height) ? map_conf.height : spBtY;
+        spBtY = (g->map_conf.height / 2) + (spHeight / 2);
+        spBtY = (spBtY > g->map_conf.height) ? g->map_conf.height : spBtY;
 
-        spriteAngle = atan2(sprite.y - g_player.y, sprite.x - g_player.x) - move_player.rotationAngle;
+        spriteAngle = atan2(sprite.y - g->g_player.y, sprite.x - g->g_player.x) - g->move_player.rotationAngle;
         spritePosX = tan(spriteAngle) * distProjPlan;
-        spriteLeftX = (map_conf.width / 2) + spritePosX - (spWidth / 2);
+        spriteLeftX = (g->map_conf.width / 2) + spritePosX - (spWidth / 2);
         SpriteRightX = spriteLeftX + spWidth;
         x = spriteLeftX;
         while (x < SpriteRightX)
@@ -67,12 +67,12 @@ void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
             y = spTpY;
             while (y < spBtY)
             {
-                if (x > 0 && x < map_conf.width && y > 0 && y < map_conf.height)
+                if (x > 0 && x < g->map_conf.width && y > 0 && y < g->map_conf.height)
                 {
-                    int distFtop = y + (spHeight / 2) - (map_conf.height / 2);
+                    int distFtop = y + (spHeight / 2) - (g->map_conf.height / 2);
                     sprite.offY = distFtop * (64 / spHeight);
                     //printf("%d\n", sprite.offY);
-                    assigne_sprite(sprite, x, y, rays);
+                    assigne_sprite(sprite, x, y, rays, g);
                 }
                 y++;
             }
@@ -82,19 +82,20 @@ void renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
     }
 }
 
-int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays)
+int assigne_sprite(t_sprite sprite, int x, int y, ray_struct *rays, t_struct *g)
 {
     int *data[2];
     int dst;
 
-    data[1] = sp.addr;
+    data[1] = g->sp.addr;
     dst = data[1][64 * sprite.offY + sprite.offX];
     if (sprite.distance < rays[x].distance && dst != 0xFF00FF)
-        my_mlx_pixel_put(&img, x, y, dst);
+        my_mlx_pixel_put(&(g->img), x, y, dst
+        , g);
     return (dst);
 }
 
-void draw_sprite_in_map(t_sprite *sprite)
+void draw_sprite_in_map(t_sprite *sprite, t_struct *g)
 {
     int k;
     int i;
@@ -103,7 +104,7 @@ void draw_sprite_in_map(t_sprite *sprite)
     k = 0;
     int colors;
 
-    while (k < map_conf.spNumber)
+    while (k < g->map_conf.spNumber)
     {
         i = sprite[k].x / TILE_SIZE;
         j = sprite[k].y / TILE_SIZE;
@@ -111,7 +112,7 @@ void draw_sprite_in_map(t_sprite *sprite)
             colors = 0xEA3546;
         else if (sprite[k].visibSp == 0)
             colors = 0xF9C80E;
-        draw_square(i, j, img, colors);
+        draw_square(i, j, g->img, colors, g);
         k++;
     }
 }

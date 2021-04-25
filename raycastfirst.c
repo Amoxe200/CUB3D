@@ -1,25 +1,25 @@
 #include "header.h"
 
-void	rays_init(ray_struct *rays)
+void	rays_init(ray_struct *rays, t_struct *g)
 {
-	rays->angle_norm = move_player.rotationAngle - (rays->fv_angle / 2);
-	rays->num_rays = map_conf.width;
+	rays->angle_norm = g->move_player.rotationAngle - (rays->fv_angle / 2);
+	rays->num_rays = g->map_conf.width;
 	rays->fv_angle = 60 * (M_PI / 180);
 }
 
-void	castAllRays(ray_struct *rays)
+void	castAllRays(ray_struct *rays, t_struct *g)
 {
 	int	i;
 	int	k;
 
 	i = 0;
 	k = 0;
-	rays_init(rays);
-	text_init();
+	rays_init(rays, g);
+	text_init(g);
 	while (i < rays->num_rays)
 	{
-		cast(rays, i);
-		render_wall(rays, i);
+		cast(rays, i, g);
+		render_wall(rays, i, g);
 		rays->angle_norm += (rays->fv_angle / rays->num_rays);
 		i++;
 	}
@@ -39,23 +39,23 @@ void	checkTheRayDir(ray_struct *rays)
 	rays->isRayFacingLeft = !rays->isRayFacingRight;
 }
 
-void	cast(ray_struct *rays, int i)
+void	cast(ray_struct *rays, int i, t_struct *g)
 {
 	rays->angle_norm = angleSanitizer(rays->angle_norm);
 	checkTheRayDir(rays);
-	checkHorzInter(rays);
-	checkVertInter(rays);
-	calculDistance(rays, i);
+	checkHorzInter(rays, g);
+	checkVertInter(rays, g);
+	calculDistance(rays, i, g);
 }
 
-void	checkHorzInter(ray_struct *rays)
+void	checkHorzInter(ray_struct *rays, t_struct *g)
 {
-	rays->hyintr = floor((g_player.y / TILE_SIZE)) * TILE_SIZE;
+	rays->hyintr = floor((g->g_player.y / TILE_SIZE)) * TILE_SIZE;
 	if (rays->isRayFacingDown)
 		rays->hyintr += TILE_SIZE;
 	else
 		rays->hyintr += 0;
-	rays->hxintr = g_player.x + (rays->hyintr - g_player.y)
+	rays->hxintr = g->g_player.x + (rays->hyintr - g->g_player.y)
 		/ tan(rays->angle_norm);
 	rays->hystp = TILE_SIZE;
 	if (rays->isRayFacingUp)
@@ -73,5 +73,5 @@ void	checkHorzInter(ray_struct *rays)
 		rays->hxstp *= 1;
 	rays->xyinh[0] = rays->hxintr;
 	rays->xyinh[1] = rays->hyintr;
-	checkWallHorz(rays);
+	checkWallHorz(rays, g);
 }

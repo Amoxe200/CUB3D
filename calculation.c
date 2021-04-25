@@ -10,18 +10,18 @@ double	angleSanitizer(float angle)
 	return (angle);
 }
 
-void	calculDistance(ray_struct *rays, int i)
+void	calculDistance(ray_struct *rays, int i, t_struct *g)
 {
 	float	horzHitDistance;
 	float	vertHitDistance;
 
 	if (rays->foundHorzWallHit)
-		horzHitDistance = distanceBpoint(g_player.x, g_player.y,
+		horzHitDistance = distanceBpoint(g->g_player.x, g->g_player.y,
 				rays->horzwallHitX, rays->horzwallHitY);
 	else
 		horzHitDistance = INT_MAX;
 	if (rays->foundVertWallHit)
-		vertHitDistance = distanceBpoint(g_player.x, g_player.y,
+		vertHitDistance = distanceBpoint(g->g_player.x, g->g_player.y,
 				rays->vertwallHitX, rays->vertwallHitY);
 	else
 		vertHitDistance = INT_MAX;

@@ -1,11 +1,11 @@
 #include "header.h"
 
-void	checkVertInter(ray_struct *rays)
+void	checkVertInter(ray_struct *rays, t_struct * g)
 {
-	rays->vxintr = floor((g_player.x / TILE_SIZE)) * TILE_SIZE;
+	rays->vxintr = floor((g->g_player.x / TILE_SIZE)) * TILE_SIZE;
 	if (rays->isRayFacingRight)
 		rays->vxintr += TILE_SIZE;
-	rays->vyintr = g_player.y + (rays->vxintr - g_player.x)
+	rays->vyintr = g->g_player.y + (rays->vxintr - g->g_player.x)
 		* tan(rays->angle_norm);
 	rays->vxstp = TILE_SIZE;
 	if (rays->isRayFacingLeft)
@@ -23,10 +23,10 @@ void	checkVertInter(ray_struct *rays)
 		rays->vystp *= 1;
 	rays->xyintrv[0] = rays->vxintr;
 	rays->xyintrv[1] = rays->vyintr;
-	checkWallVert(rays);
+	checkWallVert(rays, g);
 }
 
-void	checkWallVert(ray_struct *rays)
+void	checkWallVert(ray_struct *rays, t_struct* g)
 {
 	float		ytoCheck;
 	float		xtoCheck;
@@ -34,7 +34,7 @@ void	checkWallVert(ray_struct *rays)
 	xtoCheck = 0.0;
 	ytoCheck = 0.0;
 	vinitwall(rays);
-	vchecker(rays, xtoCheck, ytoCheck);
+	vchecker(rays, xtoCheck, ytoCheck, g);
 }
 
 void	vinitwall(ray_struct *rays)
@@ -46,20 +46,20 @@ void	vinitwall(ray_struct *rays)
 	rays->vertwallHitY = 0;
 }
 
-void	vchecker(ray_struct *rays, float xtoCheck, float ytoCheck)
+void	vchecker(ray_struct *rays, float xtoCheck, float ytoCheck, t_struct *g)
 {
-	while (rays->nextvty > 0 && rays->nextvty < map_conf.numHeight * TILE_SIZE)
+	while (rays->nextvtx > 0 &&rays->nextvty > 0 && rays->nextvty < g->map_conf.numHeight * TILE_SIZE)
 	{
 		if (rays->isRayFacingLeft)
 			xtoCheck = rays->nextvtx - 1;
 		else
 			xtoCheck = rays->nextvtx;
 		ytoCheck = rays->nextvty;
-		if (map_conf.map[(int)(ytoCheck / TILE_SIZE)]
+		if (g->map_conf.map[(int)(ytoCheck / TILE_SIZE)]
 			[(int)(xtoCheck / TILE_SIZE)] == '1')
 		{
 			rays->foundVertWallHit = 1;
-			rays->vertWallContent = map_conf.map[(int)(ytoCheck / TILE_SIZE)]
+			rays->vertWallContent = g->map_conf.map[(int)(ytoCheck / TILE_SIZE)]
 			[(int)(xtoCheck / TILE_SIZE)];
 			rays->vertwallHitX = rays->nextvtx;
 			rays->vertwallHitY = rays->nextvty;

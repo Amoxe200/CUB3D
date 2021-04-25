@@ -1,39 +1,39 @@
 #include "header.h"
 
-void	store_data(char *line, int i)
+void	store_data(char *line, int i, t_struct *g)
 {
 	if (!ft_strchr("RNSWEFC1 ", line[i]))
 		ft_error("Error\nMiss Config in map");
-	collect_res(line, i);
-	collect_text(line, i);
-	check_map(line, i);
-	map_conf.result = map_conf.res + map_conf.no
-		+ map_conf.so + map_conf.we + map_conf.ea
-		+ map_conf.s + map_conf.f + map_conf.c;
+	collect_res(line, i, g);
+	collect_text(line, i, g);
+	check_map(line, i, g);
+	g->map_conf.result = g->map_conf.res + g->map_conf.no
+		+ g->map_conf.so + g->map_conf.we + g->map_conf.ea
+		+ g->map_conf.s + g->map_conf.f + g->map_conf.c;
 }
 
-void	collect_res(char *line, int i)
+void	collect_res(char *line, int i, t_struct *g)
 {
 	if (line[i] != '\0' && (line[i] == 'R' && line[i + 1] == ' '))
 	{
-		rounting(line, i);
-		map_conf.data = ft_split(line + i, ' ');
-		map_conf.width = ft_atoi(map_conf.data[1]);
-		map_conf.height = ft_atoi(map_conf.data[2]);
-		if (map_conf.width > 2560)
-			map_conf.width = 2560;
-		if (map_conf.height > 1440)
-			map_conf.height = 1440;
-		if (map_conf.width <= 0 || map_conf.height <= 0)
+		rounting(line, i, g);
+		g->map_conf.data = ft_split(line + i, ' ');
+		g->map_conf.width = ft_atoi(g->map_conf.data[1]);
+		g->map_conf.height = ft_atoi(g->map_conf.data[2]);
+		if (g->map_conf.width > 2560)
+			g->map_conf.width = 2560;
+		if (g->map_conf.height > 1440)
+			g->map_conf.height = 1440;
+		if (g->map_conf.width <= 0 || g->map_conf.height <= 0)
 			ft_error("Error\n Check Resolution");
 	}
 }
 
-void	rounting(char *line, int i)
+void	rounting(char *line, int i, t_struct *g)
 {
-	if (line[i] == 'R' && line[i + 1] == ' ' && (++map_conf.counter))
+	if (line[i] == 'R' && line[i + 1] == ' ' && (++g->map_conf.counter))
 	{
-		map_conf.res += 100;
+		g->map_conf.res += 100;
 		get_res(line);
 	}
 }

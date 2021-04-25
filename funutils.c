@@ -1,16 +1,16 @@
 #include "header.h"
 
-int	has_wall(float x, float y)
+int	has_wall(float x, float y, t_struct *g)
 {
 	int	ughx;
 	int	ughy;
 
-	if (x < 0 || x > (map_conf.width * TILE_SIZE)
-		|| y < 0 || y > (map_conf.height * TILE_SIZE))
+	if (x < 0 || x > (g->map_conf.width * TILE_SIZE)
+		|| y < 0 || y > (g->map_conf.height * TILE_SIZE))
 		return (1);
 	ughx = floor(x / TILE_SIZE);
 	ughy = floor(y / TILE_SIZE);
-	if (map_conf.map[ughy][ughx] == '1')
+	if (g->map_conf.map[ughy][ughx] == '1')
 		return (1);
 	else
 		return (0);
@@ -35,7 +35,7 @@ char	*fill_textures(char *texture, char *line, int i)
 	return (texture);
 }
 
-void	fill_floor(char *line, int i)
+void	fill_floor(char *line, int i, t_struct *g)
 {
 	int	j;
 	int	comma;
@@ -53,12 +53,12 @@ void	fill_floor(char *line, int i)
 	}
 	if (!ft_isdigit(line[ft_strlen(line) - 1]))
 		ft_error("Error\nCheck floor");
-	map_conf.data = ft_split(line + i, ',');
-	if (count_tab(map_conf.data) > 3)
+	g->map_conf.data = ft_split(line + i, ',');
+	if (count_tab(g->map_conf.data) > 3)
 		ft_error("Error\nCheck floor");
 	if (comma > 2)
 		ft_error("Error\n There is more than two commas");
-	checkFloor();
+	checkFloor(g);
 }
 
 void	checkNum(char *str, char *str2, char *str3)
