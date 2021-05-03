@@ -1,91 +1,103 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   player_stuff.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/04/27 15:40:49 by aaqari            #+#    #+#             */
+/*   Updated: 2021/04/30 14:36:37 by aaqari           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
-void	reset(int keycode)
+void	reset(int keycode, t_struct *g)
 {
 	if (keycode == UP_DIR)
-		move_player.walkDirection = 0;
+		g->move_player.walkDirection = 0;
 	else if (keycode == DOWN_DIR)
-		move_player.walkDirection = 0;
+		g->move_player.walkDirection = 0;
 	else if (keycode == RIGHT_ARROW)
-		move_player.turnDirection = 0;
+		g->move_player.turnDirection = 0;
 	else if (keycode == LEFT_ARROW)
-		move_player.turnDirection = 0;
+		g->move_player.turnDirection = 0;
 	else if (keycode == A || keycode == D)
 	{
-		move_player.sideSteps = 0;
-		move_player.walkDirection = 0;
+		g->move_player.sideSteps = 0;
+		g->move_player.walkDirection = 0;
 	}
 }
 
-void 	checkKeyCode(int keycode)
+void 	checkKeyCode(int keycode, t_struct *g)
 {
 	if (keycode == UP_DIR)
-		move_player.walkDirection = 1;
+		g->move_player.walkDirection = 1;
 	if (keycode == DOWN_DIR)
-		move_player.walkDirection = -1;
+		g->move_player.walkDirection = -1;
 	if (keycode == RIGHT_ARROW)
-		move_player.turnDirection = 1;
+		g->move_player.turnDirection = 1;
 	if (keycode == LEFT_ARROW)
-		move_player.turnDirection = -1;
+		g->move_player.turnDirection = -1;
 	if (keycode == A)
 	{
-		move_player.sideSteps = -M_PI_2;
-		move_player.walkDirection = 1;
+		g->move_player.sideSteps = -M_PI_2;
+		g->move_player.walkDirection = 1;
 	}
 	if (keycode == D)
 	{
-		move_player.sideSteps = M_PI_2;
-		move_player.walkDirection = 1;
+		g->move_player.sideSteps = M_PI_2;
+		g->move_player.walkDirection = 1;
 	}
 	if (keycode == ECHAP)
 	{
 		exit(1);
-		free_memory(memory);
+		free_memory(g->memory);
 	}
 }
 
-int	onClickListner(int keycode)
+int	onClickListner(int keycode, t_struct *g)
 {
-	checkKeyCode(keycode);
-	movement();
-	reset(keycode);
+	checkKeyCode(keycode, g);
+	movement(g);
+	reset(keycode, g);
 	return (0);
 }
 
-int	reset_player(int key)
+int	reset_player(int key, t_struct *g)
 {
 	if (key == UP_DIR || key == DOWN_DIR)
-		move_player.walkDirection = 0;
+		g->move_player.walkDirection = 0;
 	if (key == A || key == D)
 	{
-		move_player.sideSteps = 0;
-		move_player.walkDirection = 0;
+		g->move_player.sideSteps = 0;
+		g->move_player.walkDirection = 0;
 	}
 	else if (key == 124)
-		move_player.turnDirection = 0;
+		g->move_player.turnDirection = 0;
 	else if (key == 123)
-		move_player.turnDirection = 0;
+		g->move_player.turnDirection = 0;
 	return (0);
 }
 
-void	movement(void)
+void	movement(t_struct *g)
 {
 	float	moveSteps;
 	float	nextX;
 	float	nextY;
 
-	move_player.rotationAngle += move_player.turnDirection
-		* move_player.rotationSpeed;
-	move_player.rotationAngle = angleSanitizer(move_player.rotationAngle);
-	moveSteps = move_player.walkDirection * move_player.moveSpeed;
-	nextY = g_player.y + sin(move_player.rotationAngle
-			+ move_player.sideSteps) * moveSteps;
-	nextX = g_player.x + cos(move_player.rotationAngle
-			+ move_player.sideSteps) * moveSteps;
-	if ((!has_wall(g_player.x, nextY + 20))
-		&& (!has_wall(g_player.x, nextY - 20)))
-		g_player.y = nextY;
-	if ((!has_wall(nextX + 20, g_player.y))
-		&& (!has_wall(nextX - 20, g_player.y)))
-		g_player.x = nextX;
+	g->move_player.rotationAngle += g->move_player.turnDirection
+		* g->move_player.rotationSpeed;
+	g->move_player.rotationAngle = angleSanitizer(g->move_player.rotationAngle);
+	moveSteps = g->move_player.walkDirection * g->move_player.moveSpeed;
+	nextY = g->g_player.y + sin(g->move_player.rotationAngle
+			+ g->move_player.sideSteps) * moveSteps;
+	nextX = g->g_player.x + cos(g->move_player.rotationAngle
+			+ g->move_player.sideSteps) * moveSteps;
+	if ((!has_wall(g->g_player.x, nextY + 20, g))
+		&& (!has_wall(g->g_player.x, nextY - 20, g)))
+		g->g_player.y = nextY;
+	if ((!has_wall(nextX + 20, g->g_player.y, g))
+		&& (!has_wall(nextX - 20, g->g_player.y, g)))
+		g->g_player.x = nextX;
 }

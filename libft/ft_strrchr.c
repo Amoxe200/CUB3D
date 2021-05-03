@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaqari <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/10 13:10:53 by aaqari            #+#    #+#             */
-/*   Updated: 2019/10/13 15:57:23 by aaqari           ###   ########.fr       */
+/*   Updated: 2021/04/28 15:49:42 by aaqari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ char	*ft_strrchr(const char *s, int c)
 		s++;
 	}
 	if (c == '\0')
-		return (char *)s;
+		return ((char *)s);
 	return (t);
 }

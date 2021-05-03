@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   calculation.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/04/27 15:39:59 by aaqari            #+#    #+#             */
+/*   Updated: 2021/04/28 15:18:03 by aaqari           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
 double	angleSanitizer(float angle)
@@ -10,18 +22,18 @@ double	angleSanitizer(float angle)
 	return (angle);
 }
 
-void	calculDistance(ray_struct *rays, int i)
+void	calculDistance(t_r_struct *rays, int i, t_struct *g)
 {
 	float	horzHitDistance;
 	float	vertHitDistance;
 
 	if (rays->foundHorzWallHit)
-		horzHitDistance = distanceBpoint(g_player.x, g_player.y,
+		horzHitDistance = distanceBpoint(g->g_player.x, g->g_player.y,
 				rays->horzwallHitX, rays->horzwallHitY);
 	else
 		horzHitDistance = INT_MAX;
 	if (rays->foundVertWallHit)
-		vertHitDistance = distanceBpoint(g_player.x, g_player.y,
+		vertHitDistance = distanceBpoint(g->g_player.x, g->g_player.y,
 				rays->vertwallHitX, rays->vertwallHitY);
 	else
 		vertHitDistance = INT_MAX;
@@ -29,7 +41,7 @@ void	calculDistance(ray_struct *rays, int i)
 	store_array(rays, i);
 }
 
-void	compDist(float h_hdist, float v_hdist, ray_struct *rays, int i)
+void	compDist(float h_hdist, float v_hdist, t_r_struct *rays, int i)
 {
 	if (v_hdist < h_hdist)
 	{
@@ -49,7 +61,7 @@ void	compDist(float h_hdist, float v_hdist, ray_struct *rays, int i)
 	}
 }
 
-void	store_array(ray_struct *rays, int i)
+void	store_array(t_r_struct *rays, int i)
 {
 	rays[i].angle_norm = rays->angle_norm;
 	rays[i].isRayFacingDown = rays->isRayFacingDown;

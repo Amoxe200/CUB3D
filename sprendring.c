@@ -1,69 +1,83 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sprendring.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/04/27 15:41:05 by aaqari            #+#    #+#             */
+/*   Updated: 2021/04/28 15:18:03 by aaqari           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
-void	spinitone(t_sprite sprite, t_spt *sp)
+int	initonesp(t_struct *g, t_sprite sprite)
 {
-	(*sp).perdistance = sprite.distance * cos(sprite.angle);
-	(*sp).spHeight = (TILE_SIZE / (*sp).perdistance)
-		* (*sp).distProjPlan;
-	(*sp).spWidth = (*sp).spHeight;
-	(*sp).spTpY = (map_conf.height / 2) - ((*sp).spHeight / 2);
-	if (((*sp).spTpY < 0))
-		(*sp).spTpY = 0;
+	g->spr.perdistance = sprite.distance * cos(sprite.angle);
+	g->spr.spHeight = (TILE_SIZE / g->spr.perdistance)
+		* g->spr.distProjPlan;
+	g->spr.spWidth = g->spr.spHeight;
+	g->spr.spTpY = (g->map_conf.height / 2) - (g->spr.spHeight / 2);
+	if (g->spr.spTpY < 0)
+		g->spr.spTpY = 0;
 	else
-		(*sp).spTpY = (*sp).spTpY;
-	(*sp).spBtY = (map_conf.height / 2) + ((*sp).spHeight / 2);
-	if (((*sp).spBtY > map_conf.height))
-		(*sp).spBtY = map_conf.height;
+		g->spr.spTpY = g->spr.spTpY;
+	g->spr.spBtY = (g->map_conf.height / 2) + (g->spr.spHeight / 2);
+	if (g->spr.spBtY > g->map_conf.height)
+		g->spr.spBtY = g->map_conf.height;
 	else
-		(*sp).spBtY = (*sp).spBtY;
-	(*sp).spriteAngle = atan2(sprite.y - g_player.y,
-			sprite.x - g_player.x) - move_player.rotationAngle;
-	(*sp).spritePosX = tan((*sp).spriteAngle) * (*sp).distProjPlan;
-	(*sp).spriteLeftX = (map_conf.width / 2) + (*sp).spritePosX
-		- ((*sp).spWidth / 2);
-	(*sp).SpriteRightX = (*sp).spriteLeftX + (*sp).spWidth;
+		g->spr.spBtY = g->spr.spBtY;
+	g->spr.spriteAngle = atan2(sprite.y - g->g_player.y,
+			sprite.x - g->g_player.x) - g->move_player.rotationAngle;
+	g->spr.spritePosX = tan(g->spr.spriteAngle) * g->spr.distProjPlan;
+	g->spr.spriteLeftX = (g->map_conf.width / 2)
+		+ g->spr.spritePosX - (g->spr.spWidth / 2);
+	g->spr.spriteRightX = g->spr.spriteLeftX + g->spr.spWidth;
+	return (g->spr.spriteLeftX);
 }
 
-void	spinittwo(t_sprite sprite, t_spt *sp, ray_struct *rays)
+void	inititwosp(t_struct *g, t_sprite sprite, t_r_struct *rays)
 {
-	int		y;
-	int		x;
-	int		distFtop;
 	float	texelWidth;
+	int		distFtop;
 
-	x = (*sp).spriteLeftX - 1;
-	while (++x < (*sp).SpriteRightX)
+	while (g->spr.x < g->spr.spriteRightX)
 	{
-		texelWidth = (64 / (*sp).spWidth);
-		if ((x - (*sp).spriteLeftX) * texelWidth < 0)
+		texelWidth = (64 / g->spr.spWidth);
+		if ((g->spr.x - g->spr.spriteLeftX) * texelWidth < 0)
 			sprite.offX = 0;
 		else
-			sprite.offX = (x - (*sp).spriteLeftX) * texelWidth;
-		y = (*sp).spTpY - 1;
-		while (++y < (*sp).spBtY)
+			sprite.offX = (g->spr.x - g->spr.spriteLeftX) * texelWidth;
+		g->spr.y = g->spr.spTpY;
+		while (g->spr.y < g->spr.spBtY)
 		{
-			if (x > 0 && x < map_conf.width && y > 0 && y < map_conf.height)
+			if (g->spr.x > 0 && g->spr.x < g->map_conf.width
+				&& g->spr.y > 0 && g->spr.y < g->map_conf.height)
 			{
-				distFtop = y + ((*sp).spHeight / 2) - (map_conf.height / 2);
-				sprite.offY = distFtop * (64 / (*sp).spHeight);
-				assigne_sprite(sprite, x, y, rays);
+				distFtop = g->spr.y + (g->spr.spHeight / 2)
+					- (g->map_conf.height / 2);
+				sprite.offY = distFtop * (64 / g->spr.spHeight);
+				assigne_sprite(sprite, rays, g);
 			}
+			(g->spr.y)++;
 		}
+		(g->spr.x)++;
 	}
 }
 
-void	renderSprite(int vbNumber, t_sprite *visibSprite, ray_struct *rays)
+void	renderSprite(int vbNumber, t_r_struct *rays, t_struct *g)
 {
 	int			i;
-	t_spt		sp;
 	t_sprite	sprite;
 
-	i = -1;
-	sp.distProjPlan = ((map_conf.width / 2) / tan(FOV / 2));
-	while (++i < vbNumber)
+	i = 0;
+	g->spr.distProjPlan = ((g->map_conf.width / 2) / tan(FOV / 2));
+	while (i < vbNumber)
 	{
-		sprite = visibSprite[i];
-		spinitone(sprite, &sp);
-		spinittwo(sprite, &sp, rays);
+		sprite = g->vbs[i];
+		g->spr.x = initonesp(g, sprite);
+		inititwosp(g, sprite, rays);
+		i++;
 	}
 }

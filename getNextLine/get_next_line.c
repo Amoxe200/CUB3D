@@ -3,72 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaqari <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 20:18:57 by aaqari            #+#    #+#             */
-/*   Updated: 2019/12/05 14:30:20 by aaqari           ###   ########.fr       */
+/*   Updated: 2021/04/28 16:25:44 by aaqari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int		freeptr(char **ptr, int r)
+int	freeptr(char **ptr, int r)
 {
-	//free(*ptr);
 	*ptr = NULL;
 	return (r);
 }
 
-int		checksave(char **line, char **save)
+int	checksave(char **line, char **save, t_struct *g)
 {
-	char *ptr;
-	char *temp;
+	char	*ptr;
+	char	*temp;
 
 	if (*save)
 	{
 		temp = *line;
-		if ((ptr = ft_strchr_(*save, '\n')))
+		ptr = ft_strchr_(*save, '\n');
+		if (ptr)
 		{
 			*ptr = '\0';
-			*line = ft_strjoin_(*line, *save);
-			//free(temp);
+			*line = ft_strjoin_(*line, *save, g);
 			temp = *save;
-			*save = ft_strdup_(ptr + 1);
-			//free(temp);
+			*save = ft_strdup_(ptr + 1, g);
 			return (1);
 		}
-		*line = ft_strjoin_(*line, *save);
-		//free(temp);
-		//free(*save);
+		*line = ft_strjoin_(*line, *save, g);
 		*save = NULL;
 	}
 	return (0);
 }
 
-int		get_next_line(int fd, char **line)
+int	get_next_line(int fd, char **line, t_struct *g)
 {
 	static char		*save;
 	char			*buff;
 	char			*ptr;
 	int				rt;
 
-	*line = ft_strdup_("");
-	if (fd < 0 || !(buff = my_malloc(BUFFER_SIZE + 1)) || read(fd, buff, 0))
+	*line = ft_strdup_("", g);
+	buff = my_malloc((BUFFER_SIZE + 1), g);
+	if (fd < 0 || !buff || read(fd, buff, 0))
 		return (-1);
-	if (checksave(line, &save))
+	if (checksave(line, &save, g))
 		return (freeptr(&buff, 1));
-	while ((rt = read(fd, buff, BUFFER_SIZE)) > 0)
+	rt = read(fd, buff, BUFFER_SIZE);
+	while (rt > 0)
 	{
 		buff[rt] = '\0';
-		ptr = *line;
-		*line = ft_strjoin_(*line, buff);
-		//free(ptr);
-		if ((ptr = ft_strchr_(*line, '\n')))
+		*line = ft_strjoin_(*line, buff, g);
+		ptr = ft_strchr_(*line, '\n');
+		if (ptr)
 		{
-			*ptr = '\0';
-			save = ft_strdup_(ptr + 1);
+			!(*ptr = '\0') && (save = ft_strdup_(ptr + 1, g));
 			return (freeptr(&buff, 1));
 		}
+		rt = read(fd, buff, BUFFER_SIZE);
 	}
 	return (freeptr(&buff, 0));
 }

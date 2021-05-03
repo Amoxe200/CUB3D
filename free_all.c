@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_all.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/04/27 15:40:21 by aaqari            #+#    #+#             */
+/*   Updated: 2021/04/28 12:41:29 by aaqari           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include "header.h"
 
-void	*my_malloc(size_t n)
+void	*my_malloc(size_t n, t_struct *g)
 {
 	void	*mem;
 
 	mem = malloc(n);
-	lst_push_front(&memory, mem);
+	lst_push_front(&(g->memory), mem);
 	return (mem);
 }
 
@@ -31,8 +43,8 @@ void	free_memory(t_mem *list)
 	free(list);
 }
 
-int	destroy(void)
+int	destroy(t_struct *g)
 {
 	exit(1);
-	free_memory(memory);
+	free_memory(g->memory);
 }

@@ -1,59 +1,76 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   texturesfun.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/04/27 15:41:11 by aaqari            #+#    #+#             */
+/*   Updated: 2021/04/28 17:18:48 by aaqari           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
-void	text_init(void)
+void	text_init(t_struct *g)
 {
 	int	w;
 	int	h;
 
-	nt.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.north_texture, &w, &h);
-	st.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.south_texture, &w, &h);
-	wt.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.west_texture, &w, &h);
-	et.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.east_texture, &w, &h);
-	sp.img = mlx_xpm_file_to_image(img.mlx_ptr, map_conf.sprite, &w, &h);
-	text_checker();
+	g->nt.img = mlx_xpm_file_to_image(g->img.mlx_ptr,
+			g->map_conf.north_texture, &w, &h);
+	g->st.img = mlx_xpm_file_to_image(g->img.mlx_ptr,
+			g->map_conf.south_texture, &w, &h);
+	g->wt.img = mlx_xpm_file_to_image(g->img.mlx_ptr,
+			g->map_conf.west_texture, &w, &h);
+	g->et.img = mlx_xpm_file_to_image(g->img.mlx_ptr,
+			g->map_conf.east_texture, &w, &h);
+	g->sp.img = mlx_xpm_file_to_image(g->img.mlx_ptr,
+			g->map_conf.sprite, &w, &h);
+	text_checker(g);
 }
 
-void	text_checker(void)
+void	text_checker(t_struct *g)
 {
-	if (!(nt.img))
+	if (!(g->nt.img))
 		ft_error("Error\nNO texture");
-	nt.addr = (int *)mlx_get_data_addr(nt.img, &nt.bits_per_pixel,
-			&nt.line_lenght, &nt.endian);
-	if (!(st.img))
+	g->nt.addr = (int *)mlx_get_data_addr(g->nt.img, &(g->nt.bits_per_pixel),
+			&(g->nt.line_lenght), &(g->nt.endian));
+	if (!(g->st.img))
 		ft_error("Error\nSO texture");
-	st.addr = (int *)mlx_get_data_addr(st.img, &st.bits_per_pixel,
-			&st.line_lenght, &st.endian);
-	if (!(wt.img))
+	g->st.addr = (int *)mlx_get_data_addr(g->st.img, &(g->st.bits_per_pixel),
+			&(g->st.line_lenght), &(g->st.endian));
+	if (!(g->wt.img))
 		ft_error("Error\nWE texture");
-	wt.addr = (int *)mlx_get_data_addr(wt.img, &wt.bits_per_pixel,
-			&wt.line_lenght, &wt.endian);
-	if (!(et.img))
+	g->wt.addr = (int *)mlx_get_data_addr(g->wt.img, &(g->wt.bits_per_pixel),
+			&(g->wt.line_lenght), &(g->wt.endian));
+	if (!(g->et.img))
 		ft_error("Error\nEA texture");
-	et.addr = (int *)mlx_get_data_addr(et.img, &et.bits_per_pixel,
-			&et.line_lenght, &et.endian);
-	if (!(sp.img))
+	g->et.addr = (int *)mlx_get_data_addr(g->et.img, &(g->et.bits_per_pixel),
+			&(g->et.line_lenght), &(g->et.endian));
+	if (!(g->sp.img))
 		ft_error("Error\nS texture");
-	sp.addr = (int *)mlx_get_data_addr(sp.img, &sp.bits_per_pixel,
-			&sp.line_lenght, &sp.endian);
+	g->sp.addr = (int *)mlx_get_data_addr(g->sp.img, &(g->sp.bits_per_pixel),
+			&(g->sp.line_lenght), &(g->sp.endian));
 }
 
-int	assign_text(int i, ray_struct *rays)
+int	assign_text(int i, t_r_struct *rays, t_struct *g)
 
 {
 	int	*data[5];
 	int	dst;
 
-	data[0] = nt.addr;
-	data[1] = st.addr;
-	data[2] = wt.addr;
-	data[3] = et.addr;
+	data[1] = g->nt.addr;
+	data[3] = g->st.addr;
+	data[0] = g->wt.addr;
+	data[2] = g->et.addr;
 	if (rays[i].isRayFacingUp && !rays[i].wasHitVertical)
-		dst = data[1][64 * dtx.offY + dtx.offX];
+		dst = data[1][64 * g->dtx.offY + g->dtx.offX];
 	if (rays[i].isRayFacingLeft && rays[i].wasHitVertical)
-		dst = data[0][64 * dtx.offY + dtx.offX];
+		dst = data[0][64 * g->dtx.offY + g->dtx.offX];
 	if (rays[i].isRayFacingDown && !rays[i].wasHitVertical)
-		dst = data[3][64 * dtx.offY + dtx.offX];
+		dst = data[3][64 * g->dtx.offY + g->dtx.offX];
 	if (rays[i].isRayFacingRight && rays[i].wasHitVertical)
-		dst = data[2][64 * dtx.offY + dtx.offX];
+		dst = data[2][64 * g->dtx.offY + g->dtx.offX];
 	return (dst);
 }

@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaqari <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/24 19:54:42 by aaqari            #+#    #+#             */
-/*   Updated: 2019/10/24 19:55:25 by aaqari           ###   ########.fr       */
+/*   Updated: 2021/04/28 15:08:12 by aaqari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int			calc_num(const char *s, char c)
+static	int	calc_num(const char *s, char c)
 {
-	int count;
-	int i;
-	int mot;
+	int	count;
+	int	i;
+	int	mot;
 
 	count = 0;
 	mot = 0;
@@ -37,10 +37,10 @@ static	int			calc_num(const char *s, char c)
 	return (count);
 }
 
-static	int			long_mot(const char *s, int i, char c)
+static	int	long_mot(const char *s, int i, char c)
 {
-	int len;
-	int j;
+	int	len;
+	int	j;
 
 	len = 0;
 	j = i;
@@ -53,7 +53,7 @@ static	int			long_mot(const char *s, int i, char c)
 	return (len);
 }
 
-static	void		*fr_ee(char **mots, int j)
+static	void	*fr_ee(char **mots, int j)
 {
 	while (j--)
 		free(mots[j]);
@@ -61,11 +61,11 @@ static	void		*fr_ee(char **mots, int j)
 	return (NULL);
 }
 
-static	char		**help(const char *s, char c, char **mots)
+static	char	**help(const char *s, char c, char **mots, t_struct *g)
 {
-	int i;
-	int k;
-	int j;
+	int	i;
+	int	k;
+	int	j;
 
 	i = 0;
 	j = 0;
@@ -74,7 +74,7 @@ static	char		**help(const char *s, char c, char **mots)
 		k = 0;
 		while (s[i] == c)
 			i++;
-		mots[j] = my_malloc(sizeof(char) * long_mot(s, i, c) + 1);
+		mots[j] = my_malloc(sizeof(char) * long_mot(s, i, c) + 1, g);
 		if (mots[j] == NULL)
 			return (fr_ee(mots, j));
 		while (s[i] && s[i] != c)
@@ -86,14 +86,14 @@ static	char		**help(const char *s, char c, char **mots)
 	return (mots);
 }
 
-char				**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c, t_struct *g)
 {
 	char	**mots;
 
 	if (!s)
 		return (NULL);
-	mots = my_malloc(sizeof(char *) * (calc_num(s, c) + 1));
+	mots = my_malloc(sizeof(char *) * (calc_num(s, c) + 1), g);
 	if (!mots)
 		return (NULL);
-	return (help(s, c, mots));
+	return (help(s, c, mots, g));
 }

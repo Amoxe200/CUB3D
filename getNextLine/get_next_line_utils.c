@@ -6,7 +6,7 @@
 /*   By: aaqari <aaqari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 20:28:13 by aaqari            #+#    #+#             */
-/*   Updated: 2021/04/22 16:01:12 by aaqari           ###   ########.fr       */
+/*   Updated: 2021/04/28 16:27:47 by aaqari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 char	*ft_strcpy_(char *dest, char *src)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (src[i] != '\0')
@@ -35,7 +35,7 @@ char	*ft_strcpy_(char *dest, char *src)
 
 size_t	ft_strlen_(const char *s)
 {
-	size_t len;
+	size_t	len;
 
 	len = 0;
 	while (s[len] != '\0')
@@ -43,11 +43,11 @@ size_t	ft_strlen_(const char *s)
 	return (len);
 }
 
-char	*ft_strdup_(const char *src)
+char	*ft_strdup_(const char *src, t_struct *g)
 {
-	const char *dest;
+	const char	*dest;
 
-	dest = my_malloc(sizeof(char) * (ft_strlen_(src) + 1));
+	dest = my_malloc(sizeof(char) * (ft_strlen_(src) + 1), g);
 	if (dest == 0)
 		return (NULL);
 	ft_strcpy_((char *)dest, (char *)src);
@@ -64,7 +64,7 @@ char	*ft_strchr_(const char *s, int c)
 	return ((char *)s);
 }
 
-char	*ft_strjoin_(char *s1, char *s2)
+char	*ft_strjoin_(char *s1, char *s2, t_struct *g)
 {
 	int		l1;
 	int		i;
@@ -74,7 +74,7 @@ char	*ft_strjoin_(char *s1, char *s2)
 		return (NULL);
 	l1 = ft_strlen_(s1);
 	i = 0;
-	p = my_malloc(sizeof(char) * (l1 + ft_strlen_(s2) + 1));
+	p = my_malloc(sizeof(char) * (l1 + ft_strlen_(s2) + 1), g);
 	if (p == 0)
 		return (NULL);
 	while (s1[i] != '\0')
